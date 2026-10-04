@@ -1,6 +1,6 @@
 # Honigbiene — Anatomie in Bewegung
 
-**Veröffentlichung:** Die 3D-Biene ist für GitHub Pages vorbereitet. Repository:
+**Veröffentlichung:** Die 3D-Biene läuft auf GitHub Pages. Repository:
 [WIlski54/Honigbiene](https://github.com/WIlski54/Honigbiene), Modellseite:
 [wilski54.github.io/Honigbiene](https://wilski54.github.io/Honigbiene/).
 Einrichtung, lokale Vorschau und spätere Pushes: [VEROEFFENTLICHUNG.md](VEROEFFENTLICHUNG.md).

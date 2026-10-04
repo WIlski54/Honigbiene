@@ -6,6 +6,11 @@ Die oeffentliche Website zeigt **nur das 3D-Modell**:
 Arbeitsblatt, Filmquellen und Modellierskripte bleiben im Repository, werden aber nicht auf GitHub Pages ausgeliefert.
 Die Website benoetigt keinen Python-Server und keine API-Schluessel.
 
+**Stand 4. Oktober 2026:** Erster Push (`011eb95` auf `main`) und Pages-Deployment erfolgreich.
+GitHub Pages ist bereits auf GitHub Actions eingestellt; die Einrichtung unten dient als Referenz.
+48 JavaScript-Tests und 487 Arbeitsblatt-Tests bestehen lokal und auf dem GitHub-Runner.
+Desktop-/Mobilansicht, Explosion, Ausblenden der Bedienung und Ladepfade unter `/Honigbiene/` sind geprueft.
+
 ## GitHub Pages einrichten
 
 1. Im Repository **Settings > Pages** oeffnen.

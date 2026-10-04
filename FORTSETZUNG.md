@@ -4,6 +4,8 @@
 
 Ziel: `https://github.com/WIlski54/Honigbiene.git`. Auf Wunsch des Nutzers wird **nur die 3D-Biene**
 über GitHub Pages veröffentlicht; das Flask-Arbeitsblatt bleibt Quellstand im Repository.
+Erster Push: `011eb95` auf `main`; beide GitHub-Workflows erfolgreich. Die Seite
+`https://wilski54.github.io/Honigbiene/` ist online und im Browser mit geladenem Modell geprüft.
 Einrichtung und Aktualisierung stehen in `VEROEFFENTLICHUNG.md`. Der Pages-Workflow baut ausschließlich
 `dist/`; ein zweiter Workflow prüft das Arbeitsblatt. Relative Ladepfade einschließlich der ersten
 Bildvorlage funktionieren auch unter `/Honigbiene/`.
@@ -15,6 +17,9 @@ mit `npm run build:ab` neu gebaut. `npm run check:repo` kontrolliert Dateitypen,
 Schlüsselmuster, ohne Schlüsselwerte auszugeben. Lokaler Stand vor Veröffentlichung:
 48 Modell-/Repositorytests und 487 Arbeitsblatt-Tests bestanden; `npm audit` meldet keine bekannten Schwachstellen.
 Der lokale Docker-Daemon läuft nicht; es wurde kein Docker-Build ausgeführt.
+Pages-QA: Desktop 1309 × 1244 und Mobil 390 × 844, kein horizontaler Überlauf, Modell und Explosion
+nicht leer (Pixelprüfung), Bedienkasten aus-/einblendbar; beide GLBs und Referenzbilder liefern HTTP 200.
+48 JavaScript-Tests und 487 Python-Tests bestehen auch auf dem GitHub-Linux-Runner (19 bekannte Fixture-Warnungen).
 
 ## Arbeitsblatt „Die Honigbiene – ein Nutztier mit eigenem Staat“ (Stand 4. Oktober 2026)
 
