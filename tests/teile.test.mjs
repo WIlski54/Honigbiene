@@ -56,6 +56,15 @@ function box(mesh) {
 
 const meshesFuer = (meshes, key) => meshes.filter((m) => schluesselFuer(m.gruppe, m.name).includes(key));
 
+test('Automatischer Namenswechsel trennt die acht Aussenbegriffe von sieben inneren Organen', () => {
+  const innen = ['honigmagen', 'darm', 'herz', 'gehirn', 'flugmuskeln', 'stachel', 'luftsaecke'];
+  for (const meshes of Object.values(modelle)) {
+    const innereKeys = STANDARD_SCHILDER.filter(k => meshesFuer(meshes, k).every(m => m.organ));
+    assert.deepEqual(innereKeys, innen);
+    assert.equal(STANDARD_SCHILDER.length - innereKeys.length, 8);
+  }
+});
+
 test('Tabelle teile.js: genau die 19 Schlüssel des Protokolls mit Namen, Rang und Anker', () => {
   assert.deepEqual(SCHLUESSEL.sort(), ['bein', 'brust', 'darm', 'facettenauge', 'fluegel', 'flugmuskeln', 'fuehler', 'gehirn', 'herz', 'hinterbein', 'hinterleib', 'honigmagen', 'kopf', 'luftsaecke', 'mittelbein', 'pollenkoerbchen', 'ruessel', 'stachel', 'vorderbein'].sort());
   for (const k of SCHLUESSEL) {

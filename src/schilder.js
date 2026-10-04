@@ -1,5 +1,13 @@
 // Namensschilder und nummerierte Markierungen als HTML-Overlay über dem Modell.
 // legeSchilderAus() ist rein funktional (testbar); Schilder verwaltet die DOM-Elemente.
+import { smoothstep } from './motion.js';
+
+// Erst die Aussenbeschriftung abbauen, dann die Innenbeschriftung zeigen, ohne beide zu stapeln.
+export function schildDeckkraft({ typ, innen, automatisch, organsShown, fortschritt }) {
+  if (innen && !organsShown) return 0;
+  if (typ !== 'name' || !automatisch) return 1;
+  return innen ? smoothstep(0.32, 0.55, fortschritt) : 1 - smoothstep(0.05, 0.27, fortschritt);
+}
 
 const WINKEL = [0, 40, -40, 80, -80, 120, -120, 160, 180].map((g) => (g * Math.PI) / 180);
 const RADIEN_NAME = [16, 40, 70, 105, 145];
@@ -62,13 +70,14 @@ export class Schilder {
 
   // liste: [{ id, typ: 'name' | 'nummer', text }] in Zeichenreihenfolge.
   setze(liste) {
-    const gleich = liste.length === this.eintraege.length && liste.every((e, i) => e.id === this.eintraege[i].id && e.typ === this.eintraege[i].typ && e.text === this.eintraege[i].text);
+    const gleich = liste.length === this.eintraege.length && liste.every((e, i) => e.id === this.eintraege[i].id && e.typ === this.eintraege[i].typ && e.text === this.eintraege[i].text && e.automatisch === this.eintraege[i].automatisch);
     if (gleich) return;
     for (const e of this.eintraege) { e.el.remove(); e.linie.remove(); e.punkt.remove(); }
     this.gedaechtnis.clear();
     this.eintraege = liste.map((e) => {
       const el = document.createElement('div');
       el.className = `schild ${e.typ === 'nummer' ? 'schild-nummer' : 'schild-name'} aus`;
+      el.classList.toggle('schild-auto', e.automatisch === true);
       el.textContent = e.text;
       el.dataset.teil = e.id;
       this.container.append(el);
@@ -88,7 +97,7 @@ export class Schilder {
   get leer() { return this.eintraege.length === 0; }
 
   // anker: Map id -> { x, y } in Pixeln oder null/undefined (Teil gerade nicht sichtbar).
-  zeichne(anker, breite, hoehe, unten = 0) {
+  zeichne(anker, breite, hoehe, unten = 0, deckkraft = new Map()) {
     const key = `${breite}x${hoehe}`;
     if (key !== this.groesse) { this.groesse = key; this.svg.setAttribute('viewBox', `0 0 ${breite} ${hoehe}`); this.svg.setAttribute('width', breite); this.svg.setAttribute('height', hoehe); }
     const sichtbar = this.eintraege.filter((e) => anker.get(e.id));
@@ -96,7 +105,10 @@ export class Schilder {
     const layout = new Map(legeSchilderAus(sichtbar.map((e) => ({ id: e.id, typ: e.typ, w: e.w, h: e.h, ax: anker.get(e.id).x, ay: anker.get(e.id).y })), { breite, hoehe, unten, gedaechtnis: this.gedaechtnis }).map((l) => [l.id, l]));
     for (const e of this.eintraege) {
       const l = layout.get(e.id);
+      const opacity = l ? (deckkraft.get(e.id) ?? 1) : 0;
       e.el.classList.toggle('aus', !l);
+      e.el.style.opacity = e.linie.style.opacity = e.punkt.style.opacity = String(opacity);
+      e.el.setAttribute('aria-hidden', String(opacity === 0));
       e.linie.style.display = e.punkt.style.display = l ? '' : 'none';
       if (!l) continue;
       e.el.style.transform = `translate(${l.x}px, ${l.y}px)`;

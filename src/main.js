@@ -11,7 +11,7 @@ import { TEILE, STANDARD_SCHILDER, ABGELEITET, schluesselFuer } from './teile.js
 import { komponenten, schwerpunkte, REGELN, teileDreiecke } from './teilung.js';
 import { BLICKE, parseBefehl, entscheideTipp, statusObjekt, infoObjekt, aktualisiereBesucht } from './protokoll.js';
 import { Hervorhebung } from './hervorheben.js';
-import { Schilder } from './schilder.js';
+import { Schilder, schildDeckkraft } from './schilder.js';
 
 const $ = (selector) => document.querySelector(selector);
 const BASE = import.meta.env.BASE_URL;
@@ -510,22 +510,26 @@ function updateSchilder() {
   const kasten = $('#explosion-control');
   const unten = kasten.hidden ? 0 : Math.max(0, height - kasten.offsetTop + 4);
   const anker = new Map();
-  const setze = (id, key) => {
-    if (keyInnen(key) && !organsShown) return;
+  const deckkraft = new Map();
+  const setze = (e) => {
+    const key = e.teil;
+    const opacity = schildDeckkraft({ typ: e.typ, innen: keyInnen(key), automatisch: e.automatisch, organsShown, fortschritt: spring.value });
+    deckkraft.set(e.id, opacity);
+    if (opacity === 0) return;
     const p = ankerWelt(key);
     if (!p) return;
     tmpV.copy(p).project(camera);
     if (tmpV.z < -1 || tmpV.z > 1) return;
-    anker.set(id, { x: (tmpV.x * .5 + .5) * width, y: (-tmpV.y * .5 + .5) * height });
+    anker.set(e.id, { x: (tmpV.x * .5 + .5) * width, y: (-tmpV.y * .5 + .5) * height });
   };
-  for (const e of schilder.eintraege) setze(e.id, e.teil);
-  schilder.zeichne(anker, width, height, unten);
+  for (const e of schilder.eintraege) setze(e);
+  schilder.zeichne(anker, width, height, unten, deckkraft);
 }
 
 function setzeSchilder() {
   if (!schilder) return;
   const liste = [];
-  for (const k of nameKeys ?? []) liste.push({ id: `name:${k}`, typ: 'name', text: TEILE[k].name, teil: k });
+  for (const k of nameKeys ?? []) liste.push({ id: `name:${k}`, typ: 'name', text: TEILE[k].name, teil: k, automatisch: nameKeys === STANDARD_SCHILDER });
   numberKeys.forEach((k, i) => { if (k) liste.push({ id: `nummer:${i + 1}`, typ: 'nummer', text: String(i + 1), teil: k }); });
   schilder.setze(liste);
   $('#names-toggle').setAttribute('aria-pressed', String(!!nameKeys));

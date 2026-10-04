@@ -4,7 +4,45 @@ import {
   ANSICHTEN, BLICKE, ansichtVon, aktualisiereBesucht, gesehenProzent, statusObjekt, infoObjekt, parseBefehl, entscheideTipp, standText,
 } from '../src/protokoll.js';
 import { SCHLUESSEL } from '../src/teile.js';
-import { legeSchilderAus } from '../src/schilder.js';
+import { legeSchilderAus, schildDeckkraft } from '../src/schilder.js';
+
+const namensAlpha = (fortschritt, innen, automatisch = true, organsShown = true) =>
+  schildDeckkraft({ typ: 'name', fortschritt, innen, automatisch, organsShown });
+
+test('Automatische Namen: geschlossen nur Aussenbau, Situs und Explosion nur Innenorgane', () => {
+  assert.equal(namensAlpha(0, false), 1);
+  assert.equal(namensAlpha(0, true), 0);
+  for (const p of [0.55, 1]) {
+    assert.equal(namensAlpha(p, false), 0);
+    assert.equal(namensAlpha(p, true), 1);
+  }
+  assert.equal(namensAlpha(0.15, true, true, false), 0);
+});
+
+test('Namenswechsel blendet sanft und reversibel, ohne Aussen- und Innenlisten zu stapeln', () => {
+  assert.ok(namensAlpha(0.15, false) > 0 && namensAlpha(0.15, false) < 1);
+  assert.ok(namensAlpha(0.43, true) > 0 && namensAlpha(0.43, true) < 1);
+  let aussenVorher = 1, innenVorher = 0;
+  const werte = [];
+  for (let i = 0; i <= 1000; i++) {
+    const p = i / 1000, aussen = namensAlpha(p, false), innen = namensAlpha(p, true);
+    assert.ok(aussen >= 0 && aussen <= 1 && innen >= 0 && innen <= 1);
+    assert.ok(aussen <= aussenVorher && innen >= innenVorher);
+    assert.ok(aussen === 0 || innen === 0, `keine doppelte Liste bei ${p}`);
+    if (i > 0) assert.ok(Math.abs(aussen - aussenVorher) < 0.01 && Math.abs(innen - innenVorher) < 0.01);
+    werte.push([aussen, innen]); aussenVorher = aussen; innenVorher = innen;
+  }
+  for (let i = 1000; i >= 0; i--) assert.deepEqual([namensAlpha(i / 1000, false), namensAlpha(i / 1000, true)], werte[i], 'Umkehr ohne versteckten Modus oder Hysterese');
+});
+
+test('Gezielte Arbeitsblatt-Namen und Nummern werden nicht automatisch ausgeblendet', () => {
+  for (const p of [0, 0.15, 0.43, 0.55, 1]) {
+    assert.equal(namensAlpha(p, false, false), 1);
+    assert.equal(namensAlpha(p, true, false), 1);
+    assert.equal(schildDeckkraft({ typ: 'nummer', innen: false, automatisch: true, organsShown: true, fortschritt: p }), 1);
+  }
+  assert.equal(namensAlpha(0, true, false, false), 0, 'Verborgene Organe erhalten weiterhin kein Schild');
+});
 
 test('Ansichten entsprechen den Voreinstellungen (0 / 0,55 / 1) und den Knopfschwellen', () => {
   assert.deepEqual(ANSICHTEN.map((a) => a.wert), [0, 0.55, 1]);

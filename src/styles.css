@@ -30,6 +30,7 @@
 .schild{position:absolute;left:0;top:0;will-change:transform;font:600 15px/1.2 'DM Sans Variable',Arial,sans-serif;color:#2a2418;background:#fffbef;border:1.5px solid #8a6a2b;border-radius:9px;padding:5px 9px;white-space:nowrap;box-shadow:0 1px 6px #3027101f;transition:opacity .25s;opacity:1}
 .schild-nummer{width:30px;height:30px;border-radius:50%;padding:0;display:grid;place-items:center;font-size:16px;font-weight:700;border-width:2px}
 .schild.aus{opacity:0}
+.schild-auto{transition:none}
 .quiet-button[aria-pressed=true]{color:var(--amber);font-weight:600}
 #viewport.waehlen canvas{cursor:pointer}
 
