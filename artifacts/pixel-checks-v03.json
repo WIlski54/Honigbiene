@@ -1,0 +1,66 @@
+[
+  {
+    "file": "current-v03.jpg",
+    "width": 1280,
+    "height": 720,
+    "sceneSamples": 27144,
+    "modelSamples": 1802,
+    "nonblank": true
+  },
+  {
+    "file": "explosion-v03.jpg",
+    "width": 1280,
+    "height": 720,
+    "sceneSamples": 27144,
+    "modelSamples": 1346,
+    "nonblank": true
+  },
+  {
+    "file": "exterior-v03.jpg",
+    "width": 1280,
+    "height": 720,
+    "sceneSamples": 27144,
+    "modelSamples": 1802,
+    "nonblank": true
+  },
+  {
+    "file": "mobile-closed-v03.jpg",
+    "width": 390,
+    "height": 844,
+    "sceneSamples": 9180,
+    "modelSamples": 1207,
+    "nonblank": true
+  },
+  {
+    "file": "mobile-explosion-v03.jpg",
+    "width": 390,
+    "height": 844,
+    "sceneSamples": 9180,
+    "modelSamples": 1582,
+    "nonblank": true
+  },
+  {
+    "file": "situs-v03.jpg",
+    "width": 1280,
+    "height": 720,
+    "sceneSamples": 27144,
+    "modelSamples": 1421,
+    "nonblank": true
+  },
+  {
+    "file": "tablet-landscape-v03.jpg",
+    "width": 1194,
+    "height": 834,
+    "sceneSamples": 29391,
+    "modelSamples": 2360,
+    "nonblank": true
+  },
+  {
+    "file": "tablet-portrait-v03.jpg",
+    "width": 834,
+    "height": 1194,
+    "sceneSamples": 28944,
+    "modelSamples": 6099,
+    "nonblank": true
+  }
+]

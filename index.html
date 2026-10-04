@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f2ed" />
+    <meta name="description" content="Interaktive 3D-Modellstudie einer Honigbiene mit kontinuierlicher anatomischer Explosionsansicht." />
+    <title>Honigbiene — Anatomie in Bewegung</title>
+    <link rel="icon" href="data:," />
+    <script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embed');</script>
+  </head>
+  <body>
+    <main id="app">
+      <div id="viewport" aria-label="Drehbares 3D-Modell einer Honigbiene"></div>
+      <div id="schilder" class="schilder" aria-hidden="true"></div>
+      <header class="masthead">
+        <div class="identity"><span class="eyebrow">ANATOMIE IN BEWEGUNG</span><h1>Honigbiene<span>.</span></h1><p>Apis mellifera <span>·</span> Arbeiterin</p></div>
+        <nav aria-label="Ansichtsoptionen">
+          <span class="study-tag">MODELLSTUDIE 01</span>
+          <button id="names-toggle" class="quiet-button" aria-pressed="false">Namen</button>
+          <button id="reference-toggle" class="quiet-button" aria-expanded="false" aria-controls="reference-panel">Bildvorlage</button>
+          <button id="reset-view" class="quiet-button">Ansicht zurücksetzen</button>
+        </nav>
+      </header>
+      <aside id="reference-panel" class="reference-panel" hidden>
+        <div class="panel-heading"><span class="eyebrow">DIE REFERENZEN</span><button id="reference-close" aria-label="Bildvorlage schließen">Schließen</button></div>
+        <div class="reference-tabs" role="tablist" aria-label="Referenzbilder"><button role="tab" data-reference="0" aria-selected="true" aria-controls="reference-content">Außenbau</button><button role="tab" data-reference="1" aria-selected="false" aria-controls="reference-content">Schnittmodell</button><button role="tab" data-reference="2" aria-selected="false" aria-controls="reference-content">Schnittzeichnung</button></div>
+        <div id="reference-content" role="tabpanel"><img id="reference-image" src="%BASE_URL%reference/bee.png" alt="Bildvorlage der Honigbiene aus erhöhter Dreiviertelansicht" />
+        <p id="reference-caption">Vorlage für Haltung, Proportionen und Oberflächen. Die 3D-Rekonstruktion wird schrittweise daran verfeinert.</p></div>
+      </aside>
+      <div id="loading" class="loading" role="status"><span class="loading-mark"></span><p>Die Biene nimmt Gestalt an.</p><small id="loading-detail">3D-Modell wird geladen</small></div>
+      <div id="error-panel" class="error-panel" role="alert" hidden><h2>Die 3D-Ansicht konnte nicht geladen werden.</h2><p id="error-message"></p><button id="retry">Erneut versuchen</button></div>
+      <div class="scene-caption"><span id="phase-number">01</span><div><p id="phase-title">Die äußere Gestalt</p><small id="phase-description">Eine Biene. Schicht für Schicht.</small></div></div>
+      <div class="interaction-hint" id="interaction-hint"><p><strong>Drehen</strong> Ziehen</p><p><strong>Öffnen</strong> Mausrad</p><p><strong>Zoom</strong> + / −</p></div>
+      <section id="explosion-control" class="explosion-control" aria-label="Anatomische Öffnung steuern">
+        <button id="controls-hide" class="controls-visibility controls-hide" aria-label="Bedienelemente ausblenden" title="Bedienelemente ausblenden" aria-expanded="true" aria-controls="explosion-control"><i data-lucide="chevron-down" aria-hidden="true"></i></button>
+        <div class="control-top"><span class="eyebrow">ENTDECKE DEN AUFBAU</span><output id="progress-output" for="explosion-range">0 <span>%</span></output></div>
+        <label class="sr-only" for="explosion-range">Fortschritt der Explosionsansicht</label>
+        <input id="explosion-range" type="range" min="0" max="1000" value="0" step="1" />
+        <div class="control-bottom"><div class="presets"><button data-progress="0" class="active" aria-pressed="true">Gestalt</button><button data-progress="0.55" aria-pressed="false">Situs</button><button data-progress="1" aria-pressed="false">Explosion</button></div><button id="play" class="play-button" aria-label="Öffnung automatisch abspielen"><span class="pt">Abspielen</span> <span class="pg" aria-hidden="true">↗</span></button><button id="reset-embed" class="reset-embed" aria-label="Ansicht zurücksetzen" title="Ansicht zurücksetzen"><i data-lucide="rotate-ccw" aria-hidden="true"></i></button></div>
+      </section>
+      <button id="controls-show" class="controls-visibility controls-show" aria-label="Bedienelemente einblenden" title="Bedienelemente einblenden" aria-expanded="false" aria-controls="explosion-control" hidden><i data-lucide="sliders-horizontal" aria-hidden="true"></i></button>
+      <div class="zoom-controls" aria-label="Vergrößerung"><button id="zoom-in" aria-label="Vergrößern">+</button><button id="zoom-out" aria-label="Verkleinern">−</button></div>
+      <footer><button id="about-toggle" aria-expanded="false" aria-controls="about-panel">Über diese Studie</button><span id="render-status" aria-live="off">Echtzeit · 3D</span></footer>
+      <aside id="about-panel" class="about-panel" hidden><h2>Eine erste räumliche Studie.</h2><p>Die Außenform und die Organsysteme sind prozedurale Rekonstruktionen. Bildtreue und anatomische Detailgenauigkeit werden in weiteren Modellierungsdurchgängen verbessert. Es liegt noch keine fachliche Validierung vor.</p><p>Im Situs bleiben die Organe in ihrer Ausgangslage. Die Explosionsansicht trennt anschließend die Systeme zur Betrachtung.</p><a href="https://www.apiservices.biz/documents/articles-en/standard_methods_for_apis_mellifera_anatomy_and_dissection.pdf" target="_blank" rel="noreferrer">Anatomische Grundlage: COLOSS BEEBOOK</a></aside>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

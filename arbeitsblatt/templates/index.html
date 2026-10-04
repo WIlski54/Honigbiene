@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>{{ titel }} · Interaktives Arbeitsblatt</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/logo-gsm.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css', v=v) }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/film.css', v=v) }}">
+  <script src="{{ url_for('static', filename='vendor/socket.io-4.7.5.min.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='vendor/chart-4.4.1.umd.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='vendor/fabric-5.3.0.min.js') }}" defer></script>
+  <script>window.APP = {schuelerId: {{ schueler_id|tojson }}, pseudonym: {{ pseudonym|tojson }}, klasse: {{ klasse|tojson }}, aufgabenGesamt: {{ aufgaben_gesamt }}, resumeToken: {{ resume_token|tojson }}, appId: {{ app_id|tojson }}, schemaVersion: {{ schema_version }}, pruefmodus: {{ (pruefmodus or false)|tojson }}, lehrerToken: {{ (lehrer_token or "")|tojson }}, assetVersion: {{ v|tojson }}};</script>
+  <!-- Inhalte: Kopf zuerst, dann je Reiter eine Datei (Reihenfolge = Reihenfolge der Reiter); alle VOR kern.js -->
+  <script src="{{ url_for('static', filename='js/inhalte.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/inhalte_nutztier.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/inhalte_koerper.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/inhalte_volk.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/inhalte_nutzen.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/inhalte_abschluss.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/anzeige.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/kern.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/autosave.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/aufgaben.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/bildpunkte.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/lesestrecke.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/zeichnen.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/spiele.js', v=v) }}" defer></script>
+  <!-- Film-Baustein (nach aufgaben.js, hängt sich an beimOeffnen["*"]) und 3D-Modell-Aufgaben (nach film.js) -->
+  <script src="{{ url_for('static', filename='js/film.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/modell3d.js', v=v) }}" defer></script>
+  <!-- Forschend-entwickelnder Ansatz (nach film.js: Zeilen-Knöpfe nutzen BIE.film.befehle): vermutung, pruefen, protokoll, tabelle, bildwahl, forscherbuch -->
+  <script src="{{ url_for('static', filename='js/forschen.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/schritte.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/glossar.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/bild.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/pruefen.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/ki.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/praesentation.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/app.js', v=v) }}" defer></script>
+</head>
+<body class="student-page{% if pruefmodus %} pruefmodus{% endif %}">
+  <div class="app-shell">
+    <header class="ws-header">
+      <div class="header-logos">
+        <img src="{{ url_for('static', filename='img/logo-gsm.png') }}" alt="Gesamtschule Meiderich" class="logo-gsm">
+        <div class="header-text">
+          <p class="ws-subtitle">{% if pruefmodus %}Prüfmodus der Lehrkraft · alle Reiter, Texte und Abbildungen zur Durchsicht{% else %}{{ fach }} · Arbeitsblatt mit drei Stufen{% endif %}</p>
+          <h1 class="ws-title">{{ titel }}</h1>
+        </div>
+        <img src="{{ url_for('static', filename='img/logo-wk-frei.png') }}" alt="" class="logo-wk">
+      </div>
+      <div class="header-bottom">
+        {% if pruefmodus %}
+        <span class="student-chip">🔍 Prüfmodus · alle Reiter offen · nichts wird gespeichert</span>
+        <div class="pruef-niveaus" role="group" aria-label="Niveau für alle Aufgaben">
+          <span class="pruef-label">Alle Aufgaben auf:</span>
+          <button class="btn btn-ghost-light btn-sm is-active" type="button" data-action="pruef-niveau" data-niveau="A">🟢 A</button>
+          <button class="btn btn-ghost-light btn-sm" type="button" data-action="pruef-niveau" data-niveau="B">🟡 B</button>
+          <button class="btn btn-ghost-light btn-sm" type="button" data-action="pruef-niveau" data-niveau="C">🔴 C</button>
+        </div>
+        <a class="btn btn-ghost-light btn-sm" href="{{ url_for('lehrer_dashboard') }}">← Zum Dashboard</a>
+        {% else %}
+        <span class="student-chip">👤 {{ pseudonym }} · Klasse {{ klasse }}</span>
+        <div class="progress-panel" aria-label="Lernfortschritt">
+          <div class="progress-track"><span id="progress-fill"></span></div>
+          <span id="progress-text">0 / {{ aufgaben_gesamt }} Stationen</span><span id="progress-pct" class="progress-pct">0 %</span>
+        </div>
+        <span class="autosave-chip" id="autosave-status" role="status" aria-live="polite" data-kind="">automatische Sicherung startet …</span>
+        <button class="btn btn-ghost-light btn-sm" type="button" data-action="backup-open" aria-label="Sicherung: JSON sichern oder laden">💾 Sicherung</button>
+        <form action="{{ url_for('logout') }}" method="post"><button class="btn btn-ghost-light btn-sm" type="submit">Abmelden</button></form>
+        {% endif %}
+      </div>
+    </header>
+
+    <nav class="tab-bar" id="tab-bar" aria-label="Abschnitte des Arbeitsblatts" role="tablist"></nav>
+
+    <main>
+      <section class="tab-panel" id="tab-material" data-panel="material" role="tabpanel">
+        <article class="card intro-card">
+          <span class="eyebrow">Arbeitsblatt</span>
+          <h2>{{ titel }}</h2>
+          <div class="aufgabe-box">
+            <strong>Leitfrage</strong>
+            <p>Warum gehört die Honigbiene zu den wichtigen Nutztieren – obwohl sie nicht im Stall lebt
+               und ihr Futter meist selbst sucht?</p>
+          </div>
+          <figure class="intro-figure">
+            <button type="button" class="bild-zoom" data-action="bild-open" aria-label="Bild vergrößern">
+              <img src="{{ url_for('static', filename='img/lese/' ~ einstiegsbild ~ '.svg', v=v) }}"
+                   alt="Einstiegsbild: der Imker mit seinen Bienenkästen" loading="lazy">
+            </button>
+            <figcaption class="bild-hinweis">🔍 Tippen zum Vergrößern</figcaption>
+          </figure>
+          <p>Du arbeitest fünf Abschnitte nacheinander durch:
+             <strong>Nutztier Biene → Die Biene → Das Bienenvolk → Nutzen &amp; Schutz → Abschluss</strong>.
+             Du bist Forscherin oder Forscher. In <strong>den meisten</strong> Abschnitten vermutest du zuerst etwas. Dann erforschst du
+             das 3D-Modell der Biene, den Film über das Bienenvolk oder ein Bild. Du zählst, vergleichst und prüfst
+             deine Vermutung. Erst danach kannst du in einer kurzen Lesestrecke nachschlagen. Dazu kommen
+             Sprachaufgaben und Zeichnungen – immer eine nach der anderen. Am Ende hast du dein eigenes Forscherbuch.</p>
+          <div class="btn-row">
+            <button class="btn btn-primary" type="button" data-action="tab" data-tab="nutztier">▶️ Los geht's: Nutztier Biene</button>
+          </div>
+        </article>
+
+        <article class="card">
+          <details class="material-details">
+            <summary>ℹ️ So arbeitest du</summary>
+            <ul class="howto">
+              <li><strong>Vermuten ist erlaubt:</strong> Eine Vermutung ist nie falsch. Danach prüfst du sie selbst mit dem Modell, dem Film oder einem Bild.</li>
+              <li><strong>Eine Aufgabe nach der anderen:</strong> Die nächste Aufgabe erscheint, wenn du auf „Weiter“ tippst. Wenn du nicht weiterkommst: „Später machen“.</li>
+              <li><strong>Stufe wählen:</strong> 🟢 A ist leicht, 🟡 B ist mittel, 🔴 C ist schwer. Du kannst bei jeder Aufgabe wechseln – such dir die Stufe, bei der du gut arbeiten kannst.</li>
+              <li><strong>3D-Modell und Film:</strong> Das Fenster mit dem Modell oder dem Film steht neben den Aufgaben (auf dem iPad darüber). Drehen und Tippen geht mit dem Finger. Ein Knopf in der Aufgabe zeigt dir die passende Stelle.</li>
+              <li><strong>Fette Wörter antippen:</strong> In den Lesetexten kannst du jedes fett gedruckte Wort antippen. Dann erscheint eine kurze Erklärung.</li>
+              <li><strong>Bilder antippen:</strong> Jedes Schaubild wird groß, wenn du es antippst.</li>
+              <li><strong>Sicherung:</strong> Alles wird automatisch gespeichert. Der grüne Stand oben zeigt dir das.</li>
+              <li><strong>KI:</strong> Der KI-Tutor und die KI-Rückmeldungen brauchen die Freigabe deiner Lehrkraft. Die KI verrät keine Lösungen.</li>
+            </ul>
+          </details>
+        </article>
+
+        <article class="card">
+          <details class="material-details">
+            <summary>🔎 Gute Quellen für dieses Thema</summary>
+            <ul class="howto">
+              <li><strong>Schulbuch:</strong> Kapitel zu Nutztieren oder Insekten. Seitenzahlen notieren.</li>
+              <li><strong>Deutscher Imkerbund</strong> (imkerbund.de) – Informationen von den Imkern selbst.</li>
+              <li><strong>Länderinstitut für Bienenkunde Hohen Neuendorf</strong> (honigbiene.de) – Forschung und Wissen zur Honigbiene.</li>
+              <li><strong>NABU</strong> (nabu.de) – Steckbrief „Honigbiene“ und Tipps zum Bienenschutz.</li>
+              <li><strong>Karl von Frisch: „Aus dem Leben der Bienen“</strong> – das Buch zum Schwänzeltanz.</li>
+              <li><strong>COLOSS BEEBOOK</strong> (Anatomie der Honigbiene) – Grundlage für das 3D-Modell.</li>
+              <li><strong>KI-Chatbots</strong> können Fakten erfinden. Wichtige Angaben immer mit einer zweiten Quelle prüfen.</li>
+            </ul>
+          </details>
+        </article>
+      </section>
+
+      <div id="panels"></div>
+    </main>
+  </div>
+
+
+  <!-- KI-Tutor -->
+  <button class="tutor-fab" id="tutor-toggle" type="button" data-action="tutor-toggle" aria-expanded="false" aria-controls="tutor-panel">
+    <img src="{{ url_for('static', filename='img/gsm_avatar.png') }}" alt=""><span>KI-Tutor</span>
+  </button>
+  <aside class="tutor-panel" id="tutor-panel" hidden>
+    <header>
+      <img src="{{ url_for('static', filename='img/gsm_avatar.png') }}" alt="">
+      <div><strong>GSM-Tutor</strong><small id="tutor-note">KI-Tutor · Freigabe durch Lehrkraft nötig</small></div>
+      <button type="button" data-action="tutor-close" aria-label="Tutor schließen">×</button>
+    </header>
+    <div class="chat-messages" id="chat-messages" aria-live="polite">
+      <div class="chat-message assistant"><strong>GSM-Tutor</strong><p>Hallo! Ich helfe dir bei der Honigbiene – mit Erklärungen, Rückfragen und Tipps. Lösungen verrate ich nicht. Schreib deine Frage, dann bittest du deine Lehrkraft um Freigabe.</p></div>
+    </div>
+    <div class="chat-input-row">
+      <label class="sr-only" for="chat-input">Deine Frage an den KI-Tutor</label>
+      <input id="chat-input" type="text" maxlength="500" placeholder="Deine Frage zum Thema …" autocomplete="off">
+      <button class="btn btn-ai" type="button" data-action="chat-send">Senden</button>
+    </div>
+    <p class="chat-note">🤖 Du sprichst mit einer KI (Google Gemini). Deine Lehrkraft kann den Chat mitlesen; er wird für diese Unterrichtssitzung gespeichert.</p>
+  </aside>
+
+  <!-- Freigabe-Modal -->
+  <div class="ki-overlay" id="ki-overlay" hidden>
+    <div class="ki-modal" role="dialog" aria-modal="true" aria-labelledby="ki-modal-title">
+      <span class="ki-modal-icon" id="ki-modal-icon" aria-hidden="true">🤖</span>
+      <h3 id="ki-modal-title">KI-Funktion freigeben</h3>
+      <p id="ki-modal-text"></p>
+      <div class="waiting-status" id="ki-waiting" hidden><span class="spinner" aria-hidden="true"></span>Warte auf die Lehrkraft …</div>
+      <button class="btn btn-ai btn-wide" type="button" id="ki-request-confirm" data-action="ki-confirm">📤 Freigabe anfragen</button>
+      <button class="btn btn-quiet btn-wide" type="button" data-action="ki-cancel">Abbrechen</button>
+    </div>
+  </div>
+
+  <!-- Sicherungs-Dialog: JSON sichern / laden mit Textfallback -->
+  <div class="ki-overlay" id="backup-dialog" hidden>
+    <div class="ki-modal backup-modal" role="dialog" aria-modal="true" aria-labelledby="backup-title">
+      <h3 id="backup-title">💾 Arbeitsstand sichern oder laden</h3>
+      <p class="muted">Deine Arbeit wird automatisch gesichert. Hier kannst du zusätzlich eine JSON-Datei sichern oder einen gesicherten Stand laden – zum Beispiel beim Gerätewechsel.</p>
+      <div class="btn-row">
+        <button class="btn btn-primary" type="button" data-action="backup-export">⬇️ JSON sichern</button>
+        <button class="btn btn-outline" type="button" data-action="backup-copy">📋 Text kopieren</button>
+      </div>
+      <label class="field-label" for="backup-text">Dein Arbeitsstand als Text (zum Kopieren)</label>
+      <textarea id="backup-text" class="backup-text" rows="4" readonly></textarea>
+      <label class="field-label" for="backup-import">JSON laden: Text einfügen …</label>
+      <textarea id="backup-import" class="backup-text" rows="3" placeholder='{"schema_version": 2, "app_id": "…"}'></textarea>
+      <label class="field-label" for="backup-file">… oder Datei wählen</label>
+      <input id="backup-file" type="file" accept="application/json,.json">
+      <div class="btn-row">
+        <button class="btn btn-primary" type="button" data-action="backup-import">⬆️ JSON laden</button>
+        <button class="btn btn-quiet" type="button" id="backup-close" data-action="backup-close">Schließen</button>
+      </div>
+      <p class="hint" id="backup-msg" role="status" aria-live="polite"></p>
+      <p class="hint">Geladene Antworten werden nicht automatisch als neue Versuche ins Lehrkraft-Protokoll übertragen.</p>
+    </div>
+  </div>
+
+  <!-- Glossar: Erklärung zu einem Fachbegriff -->
+  <div class="ki-overlay" id="glossar-dialog" hidden>
+    <div class="ki-modal glossar-modal" role="dialog" aria-modal="true" aria-labelledby="glossar-titel">
+      <span class="eyebrow">Fachbegriff</span>
+      <h3 id="glossar-titel">Begriff</h3>
+      <figure class="glossar-figur" id="glossar-figur" hidden><button type="button" class="bild-zoom" data-action="bild-open" aria-label="Schaubild vergrößern"><img id="glossar-bild" alt=""></button><figcaption class="bild-hinweis">🔍 Tippen zum Vergrößern</figcaption></figure>
+      <p id="glossar-text" class="glossar-text"></p>
+      <button class="btn btn-primary btn-wide" type="button" id="glossar-close" data-action="glossar-close">Verstanden – zurück zum Text</button>
+    </div>
+  </div>
+
+  <!-- Bildvergrößerung: Schaubilder bildschirmfüllend (iPad) -->
+  <div class="ki-overlay bild-overlay" id="bild-dialog" hidden>
+    <figure class="bild-modal" role="dialog" aria-modal="true" aria-label="Schaubild vergrößert">
+      <img id="bild-gross" alt="">
+      <figcaption id="bild-caption" class="bild-caption"></figcaption>
+      <button class="btn btn-primary" type="button" id="bild-close" data-action="bild-close">Schließen</button>
+    </figure>
+  </div>
+
+  <div class="ki-overlay session-overlay" id="session-overlay" hidden>
+    <div class="ki-modal"><span class="ki-modal-icon" aria-hidden="true">🔒</span><h3>Sitzung beendet</h3><p id="session-overlay-text"></p><a class="btn btn-primary btn-wide" href="{{ url_for('login') }}">Zur Anmeldung</a></div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  {% if not pruefmodus %}
+  <!-- Tafel (Baustein tafel/): übernimmt den Bildschirm, solange die Lehrkraft sie live schaltet -->
+  <div id="tafel-overlay" hidden><div id="tafel-flaeche"></div></div>
+  {% set tafel_ohne_socketio = true %}
+  {% include "_tafel.html" %}
+  <script src="{{ url_for('static', filename='js/tafel_adapter.js', v=v) }}" defer></script>
+  <script src="{{ url_for('static', filename='js/tafel_schueler.js', v=v) }}" defer></script>
+  {% endif %}
+</body>
+</html>

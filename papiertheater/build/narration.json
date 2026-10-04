@@ -1,0 +1,111 @@
+{
+  "titel": "Ein Bienenvolk im Bienenstock",
+  "kurztitel": "Bienenvolk im Stock",
+  "datei": "Ein_Bienenvolk_im_Bienenstock",
+  "stimme": "de-DE-SeraphinaMultilingualNeural",
+  "tempo": "-4%",
+  "pause": 480,
+  "aussprache": {
+    "Larve": "Larfe",
+    "Rähmchen": "Rämchen",
+    "Schwänzelns": "Schwänzeln’s"
+  },
+  "szenen": [
+    {
+      "id": 1,
+      "start": 0,
+      "ende": 20,
+      "sprechBeginn": 3.2,
+      "titel": "Ein Besuch beim Bienenvolk",
+      "text": "Heute besuchen wir ein Bienenvolk. In einem einzigen Bienenstock leben bis zu fünfzigtausend Bienen zusammen. Wie schaffen sie es, dass alles klappt? Schauen wir hinein!"
+    },
+    {
+      "id": 2,
+      "start": 20,
+      "ende": 40,
+      "sprechBeginn": 1.5,
+      "titel": "Der Bienenkasten auf der Wiese",
+      "text": "Der Imker stellt Bienenkästen auf eine Blumenwiese. Durch das kleine Flugloch fliegen die Bienen ein und aus. Wächterinnen passen am Eingang auf."
+    },
+    {
+      "id": 3,
+      "start": 40,
+      "ende": 60,
+      "sprechBeginn": 2.0,
+      "titel": "Waben, Brutraum und Honigraum",
+      "text": "Im Kasten hängen Waben aus Wachs in Holzrähmchen, mit tausenden sechseckigen Zellen. Unten liegt der Brutraum für den Nachwuchs. Oben liegt der Honigraum für den Vorrat."
+    },
+    {
+      "id": 4,
+      "start": 60,
+      "ende": 80,
+      "sprechBeginn": 1.4,
+      "titel": "Drei Arten von Bienen",
+      "text": "Ein Bienenvolk hat drei Arten von Bienen: eine Königin, viele tausend Arbeiterinnen und einige hundert Drohnen. Die männlichen Drohnen paaren sich mit jungen Königinnen. Nur zusammen sind sie ein Volk."
+    },
+    {
+      "id": 5,
+      "start": 80,
+      "ende": 100,
+      "sprechBeginn": 1.4,
+      "titel": "Die Königin legt Eier",
+      "text": "Die Königin ist die Mutter aller Bienen im Stock. Sie legt jeden Tag bis zu zweitausend Eier, jedes in eine eigene Zelle. Befehle gibt sie aber nicht."
+    },
+    {
+      "id": 6,
+      "start": 100,
+      "ende": 120,
+      "sprechBeginn": 1.6,
+      "titel": "Vom Ei zur Biene in 21 Tagen",
+      "text": "Aus dem Ei schlüpft nach drei Tagen eine Larve. Ammenbienen füttern sie, dann wird die Zelle verdeckelt. Als Puppe verwandelt sie sich. Nach einundzwanzig Tagen schlüpft eine junge Biene."
+    },
+    {
+      "id": 7,
+      "start": 120,
+      "ende": 140,
+      "sprechBeginn": 1.4,
+      "titel": "Die Aufgaben der Arbeiterinnen",
+      "text": "Die jungen Arbeiterinnen putzen zuerst die Zellen. Dann füttern sie als Ammenbienen die Larven. Später bauen sie Waben und halten Wache. Mit dem Alter wechselt also ihre Aufgabe."
+    },
+    {
+      "id": 8,
+      "start": 140,
+      "ende": 160,
+      "sprechBeginn": 2.0,
+      "titel": "Die Sammlerinnen fliegen aus",
+      "text": "Die ältesten Arbeiterinnen fliegen aus. Mit dem Rüssel saugen sie Nektar und füllen damit den Honigmagen. Den Pollen kleben sie als gelbes Höschen ans Hinterbein."
+    },
+    {
+      "id": 9,
+      "start": 160,
+      "ende": 180,
+      "sprechBeginn": 2.0,
+      "titel": "Der Tanz der Bienen",
+      "text": "Hat eine Sammlerin eine gute Wiese gefunden, tanzt sie im Stock. Die Richtung des Tanzes zeigt den Weg. Die Dauer des Schwänzelns zeigt, wie weit es ist."
+    },
+    {
+      "id": 10,
+      "start": 180,
+      "ende": 200,
+      "sprechBeginn": 1.4,
+      "titel": "Aus Nektar wird Honig",
+      "text": "Im Stock geben die Bienen den Nektar weiter und fächeln ihn mit den Flügeln trocken. So wird Honig daraus. Die Zellen verschließen sie mit Wachs. Der Imker erntet nur einen Teil."
+    },
+    {
+      "id": 11,
+      "start": 200,
+      "ende": 220,
+      "sprechBeginn": 2.0,
+      "titel": "Im Winter",
+      "text": "Im Winter bleiben die Bienen im Stock. Sie rücken zu einer Traube zusammen. Mit zitternden Flugmuskeln halten sie sich warm. Vom Honigvorrat leben sie bis zum Frühling."
+    },
+    {
+      "id": 12,
+      "start": 220,
+      "ende": 240,
+      "sprechBeginn": 1.6,
+      "titel": "Ein Volk wie ein Körper",
+      "text": "Ein Bienenvolk arbeitet zusammen wie ein einziger Körper. Keine Biene schafft es allein. Und wir Menschen bekommen von ihnen Honig, Wachs und viele Früchte."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>{{ titel }} · Fortsetzung</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/logo-gsm.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css', v=v) }}">
+  <script>window.WARTEN = {appId: {{ app_id|tojson }}, schuelerId: {{ schueler_id|tojson }}, resumeToken: {{ resume_token|tojson }}};</script>
+  <script src="{{ url_for('static', filename='js/warten.js', v=v) }}" defer></script>
+</head>
+<body class="login-page teacher-login-page">
+  <main class="compact-login-card" role="status" aria-live="polite">
+    <img src="{{ url_for('static', filename='img/logo-gsm.png') }}" alt="Gesamtschule Meiderich" class="compact-logo">
+    <span class="eyebrow">Fortsetzungsstunde</span>
+    <h1>Gleich geht es weiter{% if pseudonym %}, {{ pseudonym }}{% endif %}</h1>
+    <div class="waiting-status" id="warten-status"><span class="spinner"></span><span id="warten-text">Dein Pseudonym passt nicht eindeutig zu einem alten Arbeitsstand. Deine Lehrkraft ordnet ihn dir gleich zu …</span></div>
+    <p class="muted" id="warten-hinweis">Lass diese Seite offen. Sobald die Zuordnung da ist, öffnet sich dein Arbeitsblatt von selbst.</p>
+    <div class="btn-row">
+      <a class="btn btn-outline" href="{{ url_for('login') }}" id="warten-zurueck">← Zur Anmeldung</a>
+    </div>
+  </main>
+</body>
+</html>

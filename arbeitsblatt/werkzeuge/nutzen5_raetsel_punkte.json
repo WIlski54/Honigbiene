@@ -1,0 +1,28 @@
+{
+  "bild": "/static/img/lese/nutzen-5-raetsel.svg",
+  "breite": 900,
+  "hoehe": 560,
+  "hinweis": "Mittelpunkt x, y und empfohlener Radius r je Ort; Ränder der Kreise ≥ 60 px auseinander, Durchmesser ≥ 110 px.",
+  "orte": {
+    "wiese": {
+      "x": 235,
+      "y": 408,
+      "r": 150
+    },
+    "kahl": {
+      "x": 565,
+      "y": 482,
+      "r": 70
+    },
+    "traktor": {
+      "x": 784,
+      "y": 469,
+      "r": 80
+    },
+    "lupe": {
+      "x": 700,
+      "y": 190,
+      "r": 125
+    }
+  }
+}

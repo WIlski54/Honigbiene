@@ -1,0 +1,35 @@
+{
+  "bild": "stock-karte",
+  "breite": 900,
+  "hoehe": 560,
+  "punkte": {
+    "Dach": {
+      "x": 370,
+      "y": 76
+    },
+    "Honigraum": {
+      "x": 565,
+      "y": 201
+    },
+    "Brutraum": {
+      "x": 565,
+      "y": 362
+    },
+    "Boden": {
+      "x": 444,
+      "y": 476
+    },
+    "Flugloch": {
+      "x": 175,
+      "y": 413
+    },
+    "Rähmchen": {
+      "x": 670,
+      "y": 405
+    },
+    "Wabe": {
+      "x": 761,
+      "y": 400
+    }
+  }
+}

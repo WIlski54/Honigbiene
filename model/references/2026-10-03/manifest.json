@@ -1,0 +1,86 @@
+[
+  {
+    "uploadNumber": 1,
+    "file": "01-head-frontal.png",
+    "sha256": "91180601D98F9228E3C1929522F61370EA74C0542B94DF3CFC71512A42EE3304",
+    "duplicate": false,
+    "provenance": "User-supplied reference, original provider and license unverified; image preserved unchanged"
+  },
+  {
+    "uploadNumber": 2,
+    "file": "02-foraging-side.png",
+    "sha256": "4116D9918FFFFFC54DF893B44B51C4CD8BC5E4FC0B01DE7A0DC1D41C08C5587F",
+    "duplicate": false,
+    "provenance": "User-supplied reference, original provider and license unverified; image preserved unchanged"
+  },
+  {
+    "uploadNumber": 3,
+    "file": "03-dorsal-wings.png",
+    "sha256": "AC8C2C43EE90A4C9A00830968BC1651BBC2F4A87B57F1B1CFC766CD8D3851614",
+    "duplicate": false,
+    "provenance": "User-supplied reference, original provider and license unverified; image preserved unchanged"
+  },
+  {
+    "uploadNumber": 4,
+    "file": "04-eye-hair-detail.png",
+    "sha256": "0E4FBA6D97F6AF4C91D522698947ADFEDE0BBA23E8396916E42636D4922D2ED3",
+    "duplicate": false,
+    "provenance": "User-supplied reference, original provider and license unverified; image preserved unchanged"
+  },
+  {
+    "uploadNumber": 5,
+    "file": "05-proboscis-detail.png",
+    "sha256": "D1DB49CDF9ACAB52F6F77E6DF1FD929E14168333BFC1FF10D0F26EBC3BD80635",
+    "duplicate": false,
+    "provenance": "User-supplied reference, original provider and license unverified; image preserved unchanged"
+  },
+  {
+    "uploadNumber": 6,
+    "file": "06-anatomy-numbered.png",
+    "sha256": "A612AA1F0417A8533006C791DBF87B4E0A7949D2CC3EE6C8A9AD44AE62562528",
+    "duplicate": false,
+    "provenance": "User-supplied reference, original provider and license unverified; image preserved unchanged"
+  },
+  {
+    "uploadNumber": 7,
+    "file": "07-side-pose.png",
+    "sha256": "A056EC706D7FBEFDBAD7CE575AD520E9310EA3D240DFB9031455D237B6EE38CE",
+    "duplicate": false,
+    "provenance": "User-supplied reference, original provider and license unverified; image preserved unchanged"
+  },
+  {
+    "uploadNumber": 8,
+    "file": "07-side-pose.png",
+    "sha256": "A056EC706D7FBEFDBAD7CE575AD520E9310EA3D240DFB9031455D237B6EE38CE",
+    "duplicate": true,
+    "provenance": "User-supplied reference, original provider and license unverified; image preserved unchanged"
+  },
+  {
+    "uploadNumber": 9,
+    "file": "07-side-pose.png",
+    "sha256": "A056EC706D7FBEFDBAD7CE575AD520E9310EA3D240DFB9031455D237B6EE38CE",
+    "duplicate": true,
+    "provenance": "User-supplied reference, original provider and license unverified; image preserved unchanged"
+  },
+  {
+    "uploadNumber": 10,
+    "file": "10-anatomy-labelled-nl.png",
+    "sha256": "09B344A0179AB6E9235C6EBD82F480BB74BD24E10B6D1674402996A1070D54B5",
+    "duplicate": false,
+    "provenance": "User-supplied labelled teaching illustration; source unverified"
+  },
+  {
+    "uploadNumber": 11,
+    "file": "11-ai-generated-anatomy.jpg",
+    "sha256": "B409A6626565A4C5ACBDF9EA2E4B8FB1875AAB7B93B72D6C77E9B7827B4ECBD4",
+    "duplicate": false,
+    "provenance": "AI-generated illustration; contradictory labels; not a validated anatomical source"
+  },
+  {
+    "uploadNumber": 12,
+    "file": "12-detailed-internal-illustration.png",
+    "sha256": "A0EB4F9CAC3940518C6A03E6DE50FAF166269BA75C79829632384A38F9146383",
+    "duplicate": false,
+    "provenance": "Detailed user-supplied illustration; provenance and anatomical accuracy unverified"
+  }
+]

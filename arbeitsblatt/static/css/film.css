@@ -1,0 +1,42 @@
+/* Film-Baustein (film.js): Bühne neben bzw. über den Aufgaben, Modell-Knöpfe, Film-Aufgaben. GSM-Farben aus style.css. */
+.film-layout { display: block; }
+body.mit-film .film-layout { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(340px, 1fr); gap: 20px; align-items: start; }
+.filmbuehne { position: sticky; top: 12px; z-index: 5; }
+.filmbuehne[hidden] { display: none; }
+.film-kopf { display: flex; align-items: center; gap: 8px; padding: 6px 4px 8px; font-size: 14px; }
+.film-titel { font-weight: 700; color: var(--gsm-blau, #006AB3); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.film-stand { color: #5b6470; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.film-klein { min-height: 44px; min-width: 44px; }
+.film-rahmen { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #1a1715; border-radius: 12px; overflow: hidden;
+  box-shadow: 0 8px 24px rgba(13, 27, 42, .18); }
+.film-rahmen iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.film-rahmen iframe[hidden] { display: none; }
+.filmbuehne.klein .film-rahmen { height: 0; aspect-ratio: auto; box-shadow: none; }
+/* Eingeklappt behält der Film seine Größe (nur beschnitten): bei 0 px Höhe meldet sein Zeichenfeld Fehler (drawImage mit Breite/Höhe 0) */
+.filmbuehne.klein .film-rahmen iframe { inset: auto; top: 0; left: 0; width: 320px; height: 180px; }
+
+/* iPad hochkant / Handy: Bühne über den Aufgaben, klebt oben, höchstens 40 % der Bildschirmhöhe inklusive Kopfzeile
+   (Rahmen 34 vh + Kopfzeile ≈ 52 px; bei 768 × 1024 sind das 349 + 52 = 401 px = 39 %). In Stationen ohne Film-/Modell-
+   Bindung steht sie eingeklappt (film.js, stationWechsel). */
+@media (max-width: 1100px) {
+  body.mit-film .film-layout { grid-template-columns: minmax(0, 1fr); }
+  .filmbuehne { order: -1; top: 0; background: var(--hintergrund, #f4f7fb); padding-bottom: 4px; }
+  .film-kopf { padding: 2px 4px 4px; }
+  .film-rahmen { width: min(100%, calc(34vh * 16 / 9)); margin: 0 auto; }
+}
+
+/* Modell-Knöpfe an Aufgaben */
+.film-knoepfe { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+.film-knopf { min-height: 44px; background: #fff7d6; border: 2px solid var(--gsm-gelb, #F7B800); color: #1f2937; font-weight: 600; border-radius: 10px; padding: 8px 14px; white-space: normal; text-align: left; max-width: 100%; }
+.film-knopf.pflicht { border-width: 3px; }
+.film-knopf:disabled { opacity: .5; }
+.film-sperre { background: #fff7d6; border-left: 4px solid var(--gsm-gelb, #F7B800); padding: 8px 12px; border-radius: 6px; margin: 0 0 12px; }
+.film-gesperrt > :not(.film-knoepfe):not(.film-sperre) { opacity: .4; pointer-events: none; user-select: none; }
+
+/* Aufgabe „Film ansehen“ */
+.film-beobachtung { background: #f1f6fb; border-radius: 10px; padding: 10px 14px; margin: 10px 0; }
+.film-beobachtung ol { margin: 6px 0 0; padding-left: 22px; }
+.film-fortschritt { display: flex; align-items: center; gap: 10px; margin: 12px 0; }
+.film-balken { flex: 1; height: 10px; background: #e3e8ee; border-radius: 5px; overflow: hidden; }
+.film-balken i { display: block; height: 100%; width: 0; background: var(--gsm-blau, #006AB3); transition: width .4s; }
+.pruef-loesung { background: #fdf0f8; border-left: 4px solid var(--gsm-magenta, #AD007C); padding: 8px 12px; border-radius: 6px; }

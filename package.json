@@ -1,0 +1,29 @@
+{
+  "name": "honigbiene-anatomie",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "dev:tablet": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "build:ab": "vite build --outDir arbeitsblatt/static/film/bienenmodell --emptyOutDir",
+    "preview": "vite preview --host 127.0.0.1",
+    "check:repo": "node scripts/check-repository.mjs",
+    "test": "node --test tests/motion.test.mjs tests/gestures.test.mjs tests/model.test.mjs tests/teile.test.mjs tests/protokoll.test.mjs tests/repository.test.mjs",
+    "model:optimize": "node model/optimize.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/dm-sans": "^5.3.0",
+    "@fontsource/libre-caslon-display": "^5.3.0",
+    "lucide": "1.51.0",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "@gltf-transform/functions": "^4.5.1",
+    "meshoptimizer": "^1.3.0",
+    "vite": "^6.1.0"
+  }
+}

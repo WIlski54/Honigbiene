@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ titel }} · Lehrer-Dashboard</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/logo-gsm.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css', v=v) }}">
+  <script src="{{ url_for('static', filename='vendor/socket.io-4.7.5.min.js') }}" defer></script>
+  <script>window.DASH = {token: {{ lehrer_token|tojson }}, limit: {{ token_limit }}, aufgabenGesamt: {{ aufgaben_gesamt }}, abschnitte: {{ abschnitte|tojson }}};</script>
+  <script src="{{ url_for('static', filename='js/dashboard.js', v=v) }}" defer></script>
+</head>
+<body class="dashboard-page">
+  <header class="dashboard-header">
+    <div class="dashboard-brand"><img src="{{ url_for('static', filename='img/logo-gsm.png') }}" alt="GSM"><div><span class="eyebrow light">{{ fach }} · Klassenunterricht (Gemeinsames Lernen)</span><h1>{{ titel }} · Live-Dashboard</h1></div></div>
+    <div class="dashboard-actions">
+      <span class="pill {{ 'pill-open' if ki_konfiguriert else 'pill-locked' }}">{{ 'KI konfiguriert' if ki_konfiguriert else 'KI ohne Schlüssel' }}</span>
+      <span class="pill {{ 'pill-open' if iserv.konfiguriert else 'pill-offline' }}" id="iserv-pill">{{ 'IServ konfiguriert' if iserv.konfiguriert else 'IServ nicht konfiguriert' }}</span>
+      <a class="btn btn-ghost-light btn-sm" href="{{ url_for('lehrer_pruefen') }}" target="_blank" rel="noopener" title="Alle Reiter, Texte und Abbildungen durchsehen – ohne Schrittmodus, nichts wird gespeichert">🔍 Prüfmodus</a>
+      <button class="btn btn-ghost-light btn-sm" id="refresh-dashboard" type="button">Aktualisieren</button>
+      <form action="{{ url_for('lehrer_logout') }}" method="post"><button class="btn btn-accent btn-sm" type="submit">Abmelden</button></form>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <section class="kpi-grid" aria-label="Kennzahlen">
+      <article><span>Angemeldet</span><strong id="kpi-students">{{ schueler_infos|length }}</strong></article>
+      <article><span>Online</span><strong id="kpi-online">{{ schueler_infos|selectattr('online')|list|length }}</strong></article>
+      <article><span>Offene KI-Anfragen</span><strong id="kpi-requests">{{ offene|length }}</strong></article>
+      <article><span>Antwortversuche</span><strong id="kpi-answers">{{ schueler_infos|sum(attribute='antworten') }}</strong></article>
+      <article><span>KI-Tokens heute</span><strong id="kpi-tokens">{{ today_tokens }}</strong></article>
+    </section>
+
+    <section class="dashboard-card" id="hakt-card">
+      <header class="card-title">
+        <div><span class="eyebrow">Auswertung</span><h2>Woran es hakt</h2></div>
+        <span class="count-badge" id="hakt-count">0</span>
+      </header>
+      <p class="help-text">Die Stationen mit den meisten Fehlversuchen der Klasse – aus den bewertbaren Antworten
+        (Auswahl, Lücken, Zuordnung, Sortierung, Lesestrecke, Modell finden, Filmmoment …). Zum Wiederholen oder
+        Nachbesprechen. Die Zahlen aktualisieren sich live.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Station</th><th>Abschnitt</th><th>Fehlversuche</th><th>Lernende betroffen</th><th>Letzte Frage</th></tr></thead>
+        <tbody id="hakt-body"><tr id="no-hakt"><td colspan="5" class="empty-state">Noch keine Fehlversuche.</td></tr></tbody>
+      </table></div>
+    </section>
+
+    <section class="dashboard-card" id="vermutungen-card">
+      <header class="card-title">
+        <div><span class="eyebrow">Unterrichtsgespräch</span><h2>Vermutungen der Klasse</h2></div>
+        <span class="count-badge" id="verm-count">0</span>
+      </header>
+      <p class="help-text">Je Forscherfrage, was die Lernenden vermutet haben (jeweils die letzte Vermutung). Ohne Bewertung – gut zum Beginn der Auswertung:
+        „Wer hat etwas anderes vermutet? Warum?“ Die Balken zeigen die gewählten Möglichkeiten, darunter stehen die Sätze der Kinder. Aktualisiert sich live.</p>
+      <div id="verm-body"><p class="empty-state" id="no-verm">Noch keine Vermutungen.</p></div>
+    </section>
+
+    <section class="dashboard-card" id="praesentation-card">
+      <header class="card-title">
+        <div><span class="eyebrow">Alle schauen auf dasselbe</span><h2>Präsentationsmodus</h2></div>
+        <span class="praes-status" id="praes-status">aus</span>
+      </header>
+      <p class="help-text">Blendet allen angemeldeten Lernenden dasselbe Bild ein – bildschirmfüllend, sonst
+        ist nichts bedienbar. Wer sich erst währenddessen anmeldet, sieht es ebenfalls sofort. Gut für den
+        Einstieg: Alle beschreiben zuerst dieselbe Ausgangssituation.</p>
+      <div class="praes-panel">
+        <div class="praes-zeile">
+          <label for="praes-bild">Bild
+            <select id="praes-bild"></select>
+          </label>
+          <label for="praes-hinweis">Arbeitsauftrag (freiwillig)
+            <input type="text" id="praes-hinweis" maxlength="200" placeholder="z. B. Beschreibe, was du siehst.">
+          </label>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary btn-sm" type="button" id="praes-start">👀 Allen zeigen</button>
+          <button class="btn btn-outline btn-sm" type="button" id="praes-stop">✕ Beenden</button>
+        </div>
+        <img class="praes-vorschau" id="praes-vorschau" alt="Vorschau des gewählten Bildes" hidden>
+      </div>
+    </section>
+
+    <section class="dashboard-card" id="tafel-card">
+      <header class="card-title">
+        <div><span class="eyebrow">Sicherungsphase</span><h2>🟩 Tafel</h2></div>
+        <span class="praes-status" id="tafel-status">…</span>
+      </header>
+      <p class="help-text">Lernende präsentieren an der digitalen Tafel, alle iPads und der Beamer zeigen sie mit.
+        Werkzeuge, Aufgaben, Vorlagen und wer nach vorne kommt, steuerst du auf der Tafel über ☰.
+        Tafel und Präsentationsmodus schließen sich aus.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary btn-sm" href="/lehrer/tafel" target="_blank" rel="noopener">🟩 Tafel öffnen</a>
+        <a class="btn btn-outline btn-sm" href="/lehrer/tafel/rueckblick" target="_blank" rel="noopener" id="tafel-rueckblick">📖 Rückblick</a>
+        <a class="btn btn-outline btn-sm" href="/lehrer/tafel/beamer" target="_blank" rel="noopener" title="Nur nötig, wenn ein zweites Gerät am Beamer hängt">🖥 Beamer-Ansicht</a>
+      </div>
+      <div class="tafel-angebote" id="tafel-angebote"></div>
+    </section>
+
+    <section class="dashboard-card budget-card">
+      <div class="card-title"><div><span class="eyebrow">Tagesbudget KI</span><h2 id="budget-label">{{ today_tokens }} / {{ token_limit }} Tokens</h2></div></div>
+      <div class="progress-track"><span id="budget-fill"></span></div>
+    </section>
+
+    <div class="dashboard-columns">
+      <section class="dashboard-card">
+        <header class="card-title"><div><span class="eyebrow">Jetzt entscheiden</span><h2>KI-Einzelfreigaben</h2></div><span class="count-badge" id="request-count">{{ offene|length }}</span></header>
+        <p class="help-text">Lernende fragen Tutor, Textfeedback, Zeichenbewertung oder Handschrifterkennung an. Eine Freigabe gilt für den jeweiligen Typ bis zum Ende der Sitzung.</p>
+        <div id="request-list" class="request-list">
+          {% for a in offene %}
+          <div class="request-item" data-id="{{ a.id }}">
+            <span class="request-typ">{{ a.typ }}</span>
+            <div class="who"><strong>{{ a.pseudonym }}</strong><small>Klasse {{ a.klasse }} · {{ a.kontext }} · {{ a.erstellt_at[11:16] }}</small></div>
+            <button class="btn btn-primary btn-sm" data-decide="freigegeben" data-id="{{ a.id }}" type="button">✅ Freigeben</button>
+            <button class="btn btn-danger-outline btn-sm" data-decide="abgelehnt" data-id="{{ a.id }}" type="button">✕</button>
+          </div>
+          {% else %}<p class="empty-state" id="no-requests">Keine offenen Anfragen.</p>{% endfor %}
+        </div>
+      </section>
+
+      <section class="dashboard-card">
+        <header class="card-title"><div><span class="eyebrow">Zeitlich begrenzt</span><h2>KI-Gruppenfreigabe</h2></div><span class="pill pill-offline" id="gruppe-pill">inaktiv</span></header>
+        <p class="help-text" id="gruppe-status">Gibt bestimmte KI-Funktionen für eine Klasse oder alle frei – ohne Einzelanfragen. Endet bei Zeit- oder Budgetablauf.</p>
+        <form id="gruppe-form" class="gruppe-form">
+          <fieldset><legend>Funktionen</legend>
+            <label class="check-inline"><input type="checkbox" name="typ" value="chat" checked> Tutor</label>
+            <label class="check-inline"><input type="checkbox" name="typ" value="korrektur" checked> Textfeedback</label>
+            <label class="check-inline"><input type="checkbox" name="typ" value="zeichnung"> Zeichenbewertung</label>
+            <label class="check-inline"><input type="checkbox" name="typ" value="handschrift"> Handschrift</label>
+          </fieldset>
+          <div class="gruppe-grid">
+            <label>Klasse (leer = alle)<input name="klasse" maxlength="20" placeholder="6a"></label>
+            <label>Minuten<input name="minuten" type="number" min="1" max="1440" value="45"></label>
+            <label>Gruppenbudget (Tokens, 0 = ohne)<input name="token_limit" type="number" min="0" value="20000"></label>
+            <label>Pro Lernplatz (Tokens, 0 = ohne)<input name="per_student_limit" type="number" min="0" value="1500"></label>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary btn-sm" type="submit">▶️ Gruppenfreigabe starten</button>
+            <button class="btn btn-outline btn-sm" type="button" data-gruppe="stop">⏹ Beenden</button>
+            <button class="btn btn-danger-outline btn-sm" type="button" data-gruppe="sperren">🚫 KI für Gruppe sperren</button>
+            <button class="btn btn-quiet btn-sm" type="button" data-gruppe="entsperren">Sperre aufheben</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <div class="dashboard-columns">
+      <section class="dashboard-card">
+        <header class="card-title"><div><span class="eyebrow">Kurzfristig · unverschlüsselt</span><h2>Zwischenstände auf dem App-Server</h2></div><span class="count-badge" id="snapshot-count">0</span></header>
+        <p class="help-text">Benannte Momentaufnahmen der ganzen Sitzung. Sie liegen unverschlüsselt auf dem App-Server und sind kein Ersatz für ein IServ-Archiv. „Laden“ ersetzt die laufende Sitzung nach Bestätigung und aktiviert den Fortsetzungsmodus.</p>
+        <div class="btn-row"><input id="snapshot-name" maxlength="60" placeholder="Name, z. B. Stunde 2 Ende"><button class="btn btn-primary btn-sm" type="button" id="snapshot-save">💾 Zwischenstand speichern</button></div>
+        <div id="snapshot-list" class="request-list"><p class="empty-state">Noch keine Zwischenstände.</p></div>
+      </section>
+
+      <section class="dashboard-card">
+        <header class="card-title"><div><span class="eyebrow">Langzeit · verschlüsselt</span><h2>IServ-Archiv</h2></div></header>
+        <p class="help-text" id="iserv-status">{% if iserv.konfiguriert %}Ziel: {{ iserv.host }} · {{ iserv.pfad }}{% else %}{{ iserv.fehler }}{% endif %}</p>
+        <div class="btn-row">
+          <button class="btn btn-outline btn-sm" type="button" id="iserv-test">🔌 Verbindung testen</button>
+          <button class="btn btn-outline btn-sm" type="button" id="iserv-list">📂 Archive laden</button>
+        </div>
+        <div class="btn-row"><input id="iserv-name" maxlength="60" placeholder="Name des Archivs, z. B. 9a Stunde 2"><button class="btn btn-danger" type="button" id="iserv-abschluss">🔒 Stunde abschließen &amp; archivieren</button></div>
+        <p class="help-text">Ablauf: Flush an verbundene Geräte → Snapshot → verschlüsseln → hochladen → zurücklesen → entschlüsseln → Digest prüfen → erst dann werden die Daten auf dem App-Server gelöscht.</p>
+        <div id="iserv-protokoll" class="protokoll" hidden></div>
+        <div id="iserv-archive" class="request-list"></div>
+      </section>
+    </div>
+
+    <section class="dashboard-card" id="fortsetzung-card">
+      <header class="card-title"><div><span class="eyebrow">Wiederaufnahme</span><h2>Fortsetzungsstunde</h2></div><span class="pill pill-offline" id="fortsetzung-pill">{{ 'aktiv' if fortsetzung.active else 'inaktiv' }}</span></header>
+      <p class="help-text" id="fortsetzung-status">Nach dem Laden eines Zwischenstands oder Archivs im Modus „Fortsetzung“ verbinden sich Geräte mit passendem Schlüssel automatisch. Lernende ohne Schlüssel melden sich mit Pseudonym und Klasse an und warten hier auf ihre Zuordnung.</p>
+      <div class="btn-row">
+        <button class="btn btn-primary btn-sm" type="button" id="fortsetzung-auto">✨ Eindeutige Treffer zuordnen</button>
+        <button class="btn btn-outline btn-sm" type="button" id="fortsetzung-beenden">Fortsetzungsmodus beenden</button>
+      </div>
+      <div id="fortsetzung-anfragen" class="request-list"><p class="empty-state">Keine wartenden Lernenden.</p></div>
+      <p class="help-text" id="fortsetzung-ziele"></p>
+    </section>
+
+    <div class="dashboard-columns">
+      <section class="dashboard-card">
+        <header class="card-title"><div><span class="eyebrow">Abschnitte</span><h2>Aufbau des Arbeitsblatts</h2></div></header>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Kürzel</th><th>Abschnitt</th><th>Stationen</th></tr></thead>
+          <tbody>{% for a in abschnitte %}<tr><td><span class="abschnitt-chip">{{ a.kurz }}</span></td><td>{{ a.titel }}</td><td>{% for nr in a.aufgaben %}<span title="{{ anzeige_label(nr) }} (intern {{ nr }})">{{ anzeige_nr(nr) }}</span>{{ ', ' if not loop.last }}{% endfor %}</td></tr>{% endfor %}</tbody>
+        </table></div>
+        <p class="help-text">L1–L4 sind die Lesestrecken (Nachschlagen, Lösungen nur auf dem Server; sie stehen dort, wo der Stationsplan sie nennt), {{ zeichen_nrs|join('/') }} Zeichenaufträge (KI-Bewertung nach Freigabe), {{ nrs.blitz }} Blitzfragen, {{ nrs.domino }} Domino, {{ nrs.quellen }} Quellenverzeichnis{% if nrs.forscherbuch %}, {{ nrs.forscherbuch }} Forscherbuch{% endif %}, {{ nrs.transfer }} die Transferaufgabe. Reiter 2 arbeitet mit dem 3D-Modell, Reiter 3 und 4 mit dem Film.</p>
+      </section>
+      <section class="dashboard-card">
+        <header class="card-title"><div><span class="eyebrow">Sitzung</span><h2>Verwaltung</h2></div></header>
+        <p class="help-text">Ein späterer Lehrkraft-Login setzt die Klasse nicht zurück. Ein Neustart oder Redeploy der App löscht keine Daten mehr.</p>
+        <div class="btn-row"><button class="btn btn-danger-outline btn-sm" id="reset-session" type="button">Alle Sitzungsdaten löschen</button></div>
+      </section>
+    </div>
+
+    <section class="dashboard-card">
+      <header class="card-title"><div><span class="eyebrow">Klassenübersicht</span><h2>Lernende</h2></div></header>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Status</th><th>Pseudonym</th><th>Klasse</th><th>Fortschritt</th><th>Abschnitte</th><th>Antworten</th><th>Notizen</th><th>Zeichnungen</th><th>Autosave</th><th>KI</th><th>Aktiv</th><th>Aktionen</th></tr></thead>
+        <tbody id="student-table"><tr id="no-students"><td colspan="12" class="empty-state">Noch niemand angemeldet.</td></tr></tbody>
+      </table></div>
+    </section>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+  // Tafel-Karte: Status, „möchten vorstellen“ und Zahl der Momentaufnahmen live über den Tafel-Kanal
+  window.addEventListener("DOMContentLoaded", () => {
+    if (typeof io === "undefined") return;
+    const s = io("/tafel", { auth: { lehrer_token: DASH.token }, transports: ["polling", "websocket"] });
+    const status = document.getElementById("tafel-status"), rueck = document.getElementById("tafel-rueckblick");
+    const esc = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const zeigen = (z) => {
+      const vorne = (z.am_brett || []).map((p) => p.name).join(", ");
+      status.textContent = z.modus === "live" ? "live" + (vorne ? " · vorne: " + vorne : "") : z.modus === "vorbereitung" ? "Vorbereitung" : "aus";
+      status.classList.toggle("is-live", z.modus === "live");
+      rueck.textContent = "📖 Rückblick (" + (z.momente_anzahl || 0) + ")";
+    };
+    s.on("tafel:zustand", zeigen);
+    s.on("tafel:meta", zeigen);
+    s.on("lehrer:angebote", (liste) => {
+      document.getElementById("tafel-angebote").innerHTML = liste.length
+        ? "<p class=\"help-text\">🙋 Möchten vorstellen: " + liste.map((a) => "<b>" + esc(a.name) + "</b> (" + esc(a.titel) + ")").join(", ") + "</p>" : "";
+    });
+  });
+</script>
+</body>
+</html>

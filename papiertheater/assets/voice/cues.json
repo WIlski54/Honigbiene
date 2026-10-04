@@ -1,0 +1,231 @@
+{
+ "1": [
+  {
+   "t0": 0.0,
+   "t1": 2.34,
+   "text": "Heute besuchen wir ein Bienenvolk."
+  },
+  {
+   "t0": 2.82,
+   "t1": 7.472,
+   "text": "In einem einzigen Bienenstock leben bis zu fünfzigtausend Bienen zusammen."
+  },
+  {
+   "t0": 7.952,
+   "t1": 10.618,
+   "text": "Wie schaffen sie es, dass alles klappt?"
+  },
+  {
+   "t0": 11.098,
+   "t1": 12.375,
+   "text": "Schauen wir hinein!"
+  }
+ ],
+ "2": [
+  {
+   "t0": 0.0,
+   "t1": 3.499,
+   "text": "Der Imker stellt Bienenkästen auf eine Blumenwiese."
+  },
+  {
+   "t0": 3.979,
+   "t1": 7.746,
+   "text": "Durch das kleine Flugloch fliegen die Bienen ein und aus."
+  },
+  {
+   "t0": 8.226,
+   "t1": 10.843,
+   "text": "Wächterinnen passen am Eingang auf."
+  }
+ ],
+ "3": [
+  {
+   "t0": 0.0,
+   "t1": 5.424,
+   "text": "Im Kasten hängen Waben aus Wachs in Holzrähmchen, mit tausenden sechseckigen Zellen."
+  },
+  {
+   "t0": 5.904,
+   "t1": 8.614,
+   "text": "Unten liegt der Brutraum für den Nachwuchs."
+  },
+  {
+   "t0": 9.094,
+   "t1": 11.909,
+   "text": "Oben liegt der Honigraum für den Vorrat."
+  }
+ ],
+ "4": [
+  {
+   "t0": 0.0,
+   "t1": 7.234,
+   "text": "Ein Bienenvolk hat drei Arten von Bienen: eine Königin, viele tausend Arbeiterinnen und einige hundert Drohnen."
+  },
+  {
+   "t0": 7.714,
+   "t1": 11.208,
+   "text": "Die männlichen Drohnen paaren sich mit jungen Königinnen."
+  },
+  {
+   "t0": 11.688,
+   "t1": 13.927,
+   "text": "Nur zusammen sind sie ein Volk."
+  }
+ ],
+ "5": [
+  {
+   "t0": 0.0,
+   "t1": 3.084,
+   "text": "Die Königin ist die Mutter aller Bienen im Stock."
+  },
+  {
+   "t0": 3.564,
+   "t1": 8.494,
+   "text": "Sie legt jeden Tag bis zu zweitausend Eier, jedes in eine eigene Zelle."
+  },
+  {
+   "t0": 8.974,
+   "t1": 10.867,
+   "text": "Befehle gibt sie aber nicht."
+  }
+ ],
+ "6": [
+  {
+   "t0": 0.0,
+   "t1": 3.327,
+   "text": "Aus dem Ei schlüpft nach drei Tagen eine Larve."
+  },
+  {
+   "t0": 3.807,
+   "t1": 7.436,
+   "text": "Ammenbienen füttern sie, dann wird die Zelle verdeckelt."
+  },
+  {
+   "t0": 7.916,
+   "t1": 10.02,
+   "text": "Als Puppe verwandelt sie sich."
+  },
+  {
+   "t0": 10.5,
+   "t1": 13.728,
+   "text": "Nach einundzwanzig Tagen schlüpft eine junge Biene."
+  }
+ ],
+ "7": [
+  {
+   "t0": 0.0,
+   "t1": 3.236,
+   "text": "Die jungen Arbeiterinnen putzen zuerst die Zellen."
+  },
+  {
+   "t0": 3.716,
+   "t1": 6.55,
+   "text": "Dann füttern sie als Ammenbienen die Larven."
+  },
+  {
+   "t0": 7.029,
+   "t1": 9.785,
+   "text": "Später bauen sie Waben und halten Wache."
+  },
+  {
+   "t0": 10.265,
+   "t1": 13.145,
+   "text": "Mit dem Alter wechselt also ihre Aufgabe."
+  }
+ ],
+ "8": [
+  {
+   "t0": 0.0,
+   "t1": 2.817,
+   "text": "Die ältesten Arbeiterinnen fliegen aus."
+  },
+  {
+   "t0": 3.297,
+   "t1": 7.214,
+   "text": "Mit dem Rüssel saugen sie Nektar und füllen damit den Honigmagen."
+  },
+  {
+   "t0": 7.694,
+   "t1": 11.142,
+   "text": "Den Pollen kleben sie als gelbes Höschen ans Hinterbein."
+  }
+ ],
+ "9": [
+  {
+   "t0": 0.0,
+   "t1": 4.533,
+   "text": "Hat eine Sammlerin eine gute Wiese gefunden, tanzt sie im Stock."
+  },
+  {
+   "t0": 5.013,
+   "t1": 7.66,
+   "text": "Die Richtung des Tanzes zeigt den Weg."
+  },
+  {
+   "t0": 8.14,
+   "t1": 11.544,
+   "text": "Die Dauer des Schwänzelns zeigt, wie weit es ist."
+  }
+ ],
+ "10": [
+  {
+   "t0": 0.0,
+   "t1": 4.867,
+   "text": "Im Stock geben die Bienen den Nektar weiter und fächeln ihn mit den Flügeln trocken."
+  },
+  {
+   "t0": 5.347,
+   "t1": 7.179,
+   "text": "So wird Honig daraus."
+  },
+  {
+   "t0": 7.659,
+   "t1": 10.08,
+   "text": "Die Zellen verschließen sie mit Wachs."
+  },
+  {
+   "t0": 10.56,
+   "t1": 12.808,
+   "text": "Der Imker erntet nur einen Teil."
+  }
+ ],
+ "11": [
+  {
+   "t0": 0.0,
+   "t1": 2.44,
+   "text": "Im Winter bleiben die Bienen im Stock."
+  },
+  {
+   "t0": 2.92,
+   "t1": 5.327,
+   "text": "Sie rücken zu einer Traube zusammen."
+  },
+  {
+   "t0": 5.807,
+   "t1": 8.932,
+   "text": "Mit zitternden Flugmuskeln halten sie sich warm."
+  },
+  {
+   "t0": 9.412,
+   "t1": 12.509,
+   "text": "Vom Honigvorrat leben sie bis zum Frühling."
+  }
+ ],
+ "12": [
+  {
+   "t0": 0.0,
+   "t1": 3.734,
+   "text": "Ein Bienenvolk arbeitet zusammen wie ein einziger Körper."
+  },
+  {
+   "t0": 4.214,
+   "t1": 6.241,
+   "text": "Keine Biene schafft es allein."
+  },
+  {
+   "t0": 6.721,
+   "t1": 11.089,
+   "text": "Und wir Menschen bekommen von ihnen Honig, Wachs und viele Früchte."
+  }
+ ]
+}

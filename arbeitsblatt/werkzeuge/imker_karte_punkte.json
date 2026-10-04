@@ -1,0 +1,72 @@
+{
+  "bienenkasten": {
+    "name": "Bienenkasten",
+    "x": 656,
+    "y": 372,
+    "kat": 1,
+    "bbox": [578, 264, 745, 438]
+  },
+  "imker": {
+    "name": "Imker",
+    "x": 298,
+    "y": 376,
+    "kat": 0,
+    "bbox": [217, 251, 379, 509]
+  },
+  "schleier": {
+    "name": "Schleier",
+    "x": 298,
+    "y": 304,
+    "kat": 1,
+    "bbox": [236, 247, 360, 344]
+  },
+  "rauchgeraet": {
+    "name": "Rauchgerät",
+    "x": 460,
+    "y": 474,
+    "kat": 1,
+    "bbox": [423, 315, 533, 510]
+  },
+  "honigglas": {
+    "name": "Honigglas",
+    "x": 842,
+    "y": 466,
+    "kat": 1,
+    "bbox": [790, 400, 894, 527]
+  },
+  "bluete": {
+    "name": "Blüten",
+    "x": 98,
+    "y": 492,
+    "kat": 0,
+    "bbox": [20, 441, 172, 540]
+  },
+  "obstbaum": {
+    "name": "Obstbaum",
+    "x": 102,
+    "y": 272,
+    "kat": 0,
+    "bbox": [27, 211, 177, 379]
+  },
+  "biene": {
+    "name": "Biene",
+    "x": 596,
+    "y": 164,
+    "kat": 0,
+    "bbox": [491, 95, 666, 213]
+  },
+  "sonne": {
+    "name": "Sonne",
+    "x": 800,
+    "y": 92,
+    "kat": 1,
+    "bbox": [716, 8, 884, 176]
+  },
+  "wolke": {
+    "name": "Wolke",
+    "x": 330,
+    "y": 84,
+    "kat": 1,
+    "bbox": [224, 9, 402, 120]
+  }
+}

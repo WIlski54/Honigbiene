@@ -1,0 +1,45 @@
+node_modules/
+dist/
+.vite/
+*.blend1
+*.log
+test-results/
+
+# Zugangsdaten, Laufzeitdaten und lokale Werkzeuge
+.env
+.env.*
+!.env.example
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.key
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.claude/
+.DS_Store
+Thumbs.db
+/arbeitsblatt/data/
+/arbeitsblatt/werkzeuge/ausgabe/
+
+# Builds und QA-Aufnahmen bleiben lokal; die Laufzeit-GLBs in public/ werden versioniert.
+/arbeitsblatt/static/film/bienenmodell/
+/artifacts/*
+!/artifacts/verification.md
+!/artifacts/pixel-checks-v03.json
+/model/*.raw.glb
+/model/*.blend
+/model/revisions/*.glb
+
+# Archivierte Fremdreferenzen mit ungeklärter Herkunft werden nicht veröffentlicht.
+/model/references/**/*.png
+/model/references/**/*.jpg
+
+# Der HTML-Film enthält den Ton bereits. MP4 (129 MiB) überschreitet das GitHub-Limit.
+/papiertheater/*.mp4
+/papiertheater/assets/soundtrack.wav
+/papiertheater/build/artifact.html

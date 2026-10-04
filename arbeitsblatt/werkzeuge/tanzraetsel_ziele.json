@@ -1,0 +1,109 @@
+{
+  "breite": 900,
+  "hoehe": 560,
+  "bilder": [
+    "/static/img/lese/tanzraetsel-1.svg",
+    "/static/img/lese/tanzraetsel-2.svg",
+    "/static/img/lese/tanzraetsel-3.svg"
+  ],
+  "runden": [
+    [
+      {
+        "id": "A",
+        "x": 486,
+        "y": 270,
+        "r": 60,
+        "ok": false
+      },
+      {
+        "id": "B",
+        "x": 650,
+        "y": 165,
+        "r": 60,
+        "ok": true
+      },
+      {
+        "id": "C",
+        "x": 776,
+        "y": 436,
+        "r": 60,
+        "ok": false
+      }
+    ],
+    [
+      {
+        "id": "A",
+        "x": 485,
+        "y": 300,
+        "r": 60,
+        "ok": false
+      },
+      {
+        "id": "B",
+        "x": 735,
+        "y": 153,
+        "r": 60,
+        "ok": false
+      },
+      {
+        "id": "C",
+        "x": 810,
+        "y": 300,
+        "r": 60,
+        "ok": true
+      }
+    ],
+    [
+      {
+        "id": "A",
+        "x": 735,
+        "y": 275,
+        "r": 60,
+        "ok": true
+      },
+      {
+        "id": "B",
+        "x": 601,
+        "y": 388,
+        "r": 60,
+        "ok": false
+      },
+      {
+        "id": "C",
+        "x": 794,
+        "y": 443,
+        "r": 60,
+        "ok": false
+      }
+    ]
+  ],
+  "info": [
+    {
+      "runde": 1,
+      "richtig": "B",
+      "tanz_winkel_grad": 0,
+      "tanz_laenge_px": 190,
+      "beschreibung": "Lauf senkrecht nach oben, mittellang: Das Futter liegt in Richtung der Sonne (Feld B). A und C liegen woanders.",
+      "hinweis": "Oben auf der Wabe heißt: in Richtung Sonne.",
+      "erklaerung": "Der Schwänzellauf zeigt senkrecht nach oben. Das heißt: Das Futter liegt in Richtung Sonne."
+    },
+    {
+      "runde": 2,
+      "richtig": "C",
+      "tanz_winkel_grad": 90,
+      "tanz_laenge_px": 190,
+      "beschreibung": "Lauf waagerecht nach rechts (90° zur Senkrechten), mittellang: Futter 90° rechts von der Sonne (Feld C). A ist das Spiegelbild (links), B liegt nur halb rechts oben.",
+      "hinweis": "Vergleiche den Winkel zur Senkrechten mit dem Winkel zur Sonne. Achte auf links und rechts.",
+      "erklaerung": "Der Schwänzellauf zeigt im rechten Winkel nach rechts. Das Futter liegt im gleichen Winkel rechts von der Sonne."
+    },
+    {
+      "runde": 3,
+      "richtig": "A",
+      "tanz_winkel_grad": 50,
+      "tanz_laenge_px": 330,
+      "beschreibung": "Lauf schräg nach rechts oben (50°), sehr lang: ferne Wiese in 50° (Feld A). B liegt in derselben Richtung, aber nah (Lauf zu lang). C ist genauso weit weg, aber in anderer Richtung.",
+      "hinweis": "Zwei Dinge zählen: die Richtung und die Länge des Schwänzellaufs.",
+      "erklaerung": "Der Schwänzellauf geht schräg nach rechts oben und ist lang. Das Futter liegt in dieser Richtung und weit weg."
+    }
+  ]
+}

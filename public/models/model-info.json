@@ -1,0 +1,10 @@
+{
+  "parts": 35,
+  "meshes": 140,
+  "vertices": 706467,
+  "triangles": 1138172,
+  "seed": 20261003,
+  "status": "first procedural reconstruction; not yet anatomically validated",
+  "reference": "COLOSS BEEBOOK, Standard methods for Apis mellifera anatomy and dissection, plates 8\u201312",
+  "normalizedUnits": true
+}

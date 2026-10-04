@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PLATZHALTER · Modell-Attrappe (3D-Modell der Honigbiene)</title>
+<!--
+  MODELL-ATTRAPPE – ein Simulator für das 3D-Modell der Honigbiene. Kein 3D, kein echtes Modell!
+
+  Zweck: Die AB-Aufgabentypen „erkunden“ und „modellfinden“ (static/js/modell3d.js) und die Modell-Knöpfe (film.js)
+  sprechen ein postMessage-Protokoll mit dem Modell (AB_KONZEPT.md, „Das 3D-Modell im AB“). Diese Seite ahmt es nach,
+  damit alles ohne das echte Modell im Browser getestet werden kann. Gebaut ist sie aus dem Protokoll, nicht aus dem Modell.
+
+  AB → Modell:  info · ansicht {name | wert} · blick {name} · hervorheben {teile, fokus?} · beschriften {an, teile?}
+                nummern {teile} · waehlen {an} · spielen/anhalten/freischalten/springe (ohne Wirkung) · zurueck
+  Modell → AB:  status {t, laeuft, live, ansicht, ansichtLabel, gesehen 0–100, besucht, freigeschaltet: true, standText}
+                (beim Laden, bei jeder Änderung und etwa alle 500 ms) · info {art, ansichten, blicke, teile}
+                tipp {teil, teile} (nur im Wählmodus, auf Klick auf ein Teil; teil = null bei Klick ins Leere)
+
+  Benutzung:  – Die Seite braucht keinen Server: direkt öffnen (file://) oder als Film-Datei in das AB einhängen, z. B.
+                `python -m http.server 5082 -d werkzeuge` und im Browser vor dem Öffnen des Reiters
+                INHALTE.filme.biene3d.datei = "http://localhost:5082/modell_attrappe.html?embed=1" setzen.
+                (Das echte Modell liegt unter static/film/bienenmodell/ – `npm run build:ab` im Elternprojekt. Nicht überschreiben!)
+              – Testzugriff in der Konsole (nur im selben Fenster/Ursprung): __attrappe.tippen("kopf"), .zustand(), .ansicht("situs").
+                Innenteile sind nur ab Ansicht „situs“ antippbar (wie im echten Modell).
+              – ?embed=1 blendet die Überschrift aus.
+  Formate wie im echten Modell (src/protokoll.js): info {ansichten: [{name, label}], blicke: [{name, label}], teile: [{name, label}]}.
+-->
+<style>
+  :root { --blau: #006AB3; --orange: #F7B800; --magenta: #AD007C; --text: #1e293b; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Lato, Arial, sans-serif; color: var(--text); background: linear-gradient(160deg, #fff8e0, #eaf2fa); min-height: 100vh; }
+  body.embed h1 { display: none; }
+  main { padding: 6px 8px 8px; display: flex; flex-direction: column; gap: 4px; }
+  h1 { margin: 0; font-size: 1rem; }
+  .banner { background: var(--magenta); color: #fff; font-weight: 800; letter-spacing: .04em; text-align: center; padding: 2px 8px; border-radius: 8px; font-size: .68rem; }
+  .zeile { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  button { font: inherit; cursor: pointer; border-radius: 10px; border: 2px solid var(--blau); background: #fff; color: var(--blau); font-weight: 700; padding: 2px 8px; min-height: 30px; font-size: .8rem; }
+  button.an { background: var(--blau); color: #fff; }
+  .teil { min-width: 70px; }
+  .teil.innen { border-style: dashed; border-color: #7a4b22; color: #7a4b22; }
+  .teil.verborgen { display: none; }
+  .teil.hell { background: var(--orange); border-color: var(--orange); color: #3a2a00; box-shadow: 0 0 0 4px rgba(247, 184, 0, .4); }
+  .teil.blass { opacity: .35; }
+  .teil.blitz { background: #d1fae5; border-color: #16a34a; }
+  .nummer { display: inline-block; background: var(--magenta); color: #fff; border-radius: 50%; width: 20px; height: 20px; line-height: 20px; text-align: center; font-size: .75rem; margin-right: 4px; }
+  .schild { font-size: .7rem; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 4px; margin-left: 4px; color: #475569; }
+  .stand { font-size: .75rem; color: #475569; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+  .modus { font-weight: 800; }
+  .modus.an { color: #16a34a; }
+  #fl { display: flex; flex-wrap: wrap; gap: 6px; }
+  input[type=range] { flex: 1 1 140px; min-width: 120px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>3D-Modell der Honigbiene (Attrappe)</h1>
+  <div class="banner">PLATZHALTER – Modell-Attrappe · kein echtes 3D-Modell</div>
+  <div class="zeile" id="ansichten"></div>
+  <div class="zeile"><label for="regler">Fortschritt</label><input id="regler" type="range" min="0" max="1" step="0.01" value="0"><span id="reglerwert">0,00</span></div>
+  <div class="stand"><span>Ansicht: <b id="ansichtLabel"></b></span><span>erkundet: <b id="gesehen">0</b> %</span>
+    <span class="modus" id="modus">Wählmodus aus</span><span id="blick"></span></div>
+  <div id="fl" role="group" aria-label="Teile der Biene"></div>
+</main>
+<script>
+(() => {
+  "use strict";
+  const eingebettet = new URLSearchParams(location.search).has("embed");
+  if (eingebettet) document.body.classList.add("embed");
+
+  // Ansichten wie im echten Modell: Fortschrittsregler 0 / 0,55 / 1; „erkundet“ = je ein Drittel, sobald der Regler ±0,06 daneben war.
+  const ANSICHTEN = { gestalt: { wert: 0, label: "Außenansicht" }, situs: { wert: 0.55, label: "Innenleben (Situs)" }, explosion: { wert: 1, label: "Explosion" } };
+  const BLICKE = ["seite", "oben", "vorn", "hinten", "schraeg"];
+  // key → [Name, weitere Schlüssel in `teile`, innen?]. Gemessen am echten Modell (window.beeStudy.pick):
+  // Facettenauge → ["facettenauge", "kopf"] · Hinterbein → ["hinterbein", "bein"] · Pollenkörbchen → ["pollenkoerbchen", "hinterbein", "bein"]
+  // · Brust, Hinterleib, Fühler, Flügel nur sie selbst. `teil` ist immer der speziellste Schlüssel; Beine melden nie „bein“ als `teil`.
+  const TEILE = {
+    kopf: ["Kopf", [], false], brust: ["Brust", [], false], hinterleib: ["Hinterleib", [], false],
+    fuehler: ["Fühler", [], false], facettenauge: ["Facettenauge", ["kopf"], false], ruessel: ["Rüssel", [], false],
+    fluegel: ["Flügel", [], false], bein: ["Bein", [], false], vorderbein: ["Vorderbein", ["bein"], false],
+    mittelbein: ["Mittelbein", ["bein"], false], hinterbein: ["Hinterbein", ["bein"], false],
+    pollenkoerbchen: ["Pollenkörbchen", ["hinterbein", "bein"], false],
+    gehirn: ["Gehirn", [], true], flugmuskeln: ["Flugmuskeln", [], true], honigmagen: ["Honigmagen", [], true],
+    darm: ["Darm", [], true], herz: ["Herz", [], true], stachel: ["Stachel", [], true],
+    luftsaecke: ["Luftsäcke", [], true],
+  };
+  // Teile, die es als eigene Knöpfe gibt (Sammelbegriffe wie „bein“ sind über ihre Unterteile antippbar)
+  const KNOEPFE = Object.keys(TEILE).filter(k => k !== "bein");
+
+  const z = { wert: 0, besucht: [], hervor: [], waehlen: false, beschriften: false, nummern: [], blick: "schraeg", markiert: null };
+  const $ = id => document.getElementById(id);
+
+  const ansichtName = () => { for (const [n, a] of Object.entries(ANSICHTEN)) if (Math.abs(z.wert - a.wert) <= 0.06) return n; return "zwischen"; };
+  const gesehen = () => Math.round(z.besucht.length / 3 * 100);
+  const sichtbar = k => !TEILE[k][2] || z.wert >= 0.5;   // Innenteile erst ab Situs
+
+  function status() {
+    const n = ansichtName();
+    return { mw: "status", art: "modell3d", t: 0, laeuft: false, live: false, ansicht: n,
+      ansichtLabel: n === "zwischen" ? "Übergang" : ANSICHTEN[n].label, gesehen: gesehen(), besucht: z.besucht.slice(),
+      fortschritt: Math.round(z.wert * 1000) / 1000, freigeschaltet: true, standText: n === "zwischen" ? "Übergang" : ANSICHTEN[n].label,
+      blick: z.blick, waehlen: z.waehlen, hervorgehoben: z.hervor.slice(), bereit: true };
+  }
+  function melde() { if (window.parent !== window) window.parent.postMessage(status(), "*"); }
+  function info() {
+    if (window.parent !== window) window.parent.postMessage({ mw: "info", art: "modell3d",
+      ansichten: Object.entries(ANSICHTEN).map(([name, a]) => ({ name, label: a.label })),
+      blicke: BLICKE.map(name => ({ name, label: name })), teile: Object.entries(TEILE).map(([name, t]) => ({ name, label: t[0] })) }, "*");
+  }
+
+  function zeichnen() {
+    const n = ansichtName();
+    if (n !== "zwischen" && !z.besucht.includes(n)) z.besucht.push(n);
+    $("regler").value = z.wert; $("reglerwert").textContent = z.wert.toFixed(2).replace(".", ",");
+    $("ansichtLabel").textContent = n === "zwischen" ? "Übergang" : ANSICHTEN[n].label;
+    $("gesehen").textContent = gesehen();
+    $("modus").textContent = z.waehlen ? "Wählmodus an" : "Wählmodus aus"; $("modus").classList.toggle("an", z.waehlen);
+    $("blick").textContent = "Blick: " + z.blick;
+    document.querySelectorAll("#ansichten button").forEach(b => b.classList.toggle("an", b.dataset.name === n));
+    document.querySelectorAll("#fl .teil").forEach(b => {
+      const k = b.dataset.key, st = z.hervor.length > 0;
+      const hell = z.hervor.some(h => h === k || TEILE[k][1].includes(h));   // „bein“ hebt alle Beine hervor
+      b.classList.toggle("verborgen", !sichtbar(k));
+      b.classList.toggle("hell", st && hell);
+      b.classList.toggle("blass", st && !hell);
+      b.classList.toggle("blitz", z.markiert === k);
+      const nr = z.nummern.indexOf(k);
+      b.querySelector(".nummer").style.display = nr >= 0 ? "inline-block" : "none";
+      if (nr >= 0) b.querySelector(".nummer").textContent = nr + 1;
+      b.querySelector(".schild").style.display = z.beschriften ? "inline" : "none";
+      b.querySelector(".name").style.display = z.nummern.length && nr >= 0 ? "none" : "inline";
+    });
+    melde();
+  }
+  function ansicht(name, wert) {
+    z.wert = Math.max(0, Math.min(1, typeof wert === "number" ? wert : (ANSICHTEN[name] ? ANSICHTEN[name].wert : z.wert)));
+    zeichnen();
+  }
+
+  // Aufbau
+  $("ansichten").innerHTML = Object.entries(ANSICHTEN).map(([n, a]) => `<button type="button" data-name="${n}">${a.label}</button>`).join("");
+  $("ansichten").addEventListener("click", e => { const b = e.target.closest("button"); if (b) ansicht(b.dataset.name); });
+  $("regler").addEventListener("input", e => { z.wert = parseFloat(e.target.value); zeichnen(); });
+  $("fl").innerHTML = KNOEPFE.map(k => `<button type="button" class="teil${TEILE[k][2] ? " innen" : ""}" data-key="${k}">
+      <span class="nummer" style="display:none"></span><span class="name">${TEILE[k][0]}</span><span class="schild" style="display:none">${TEILE[k][0]}</span></button>`).join("");
+
+  function tippen(key) {
+    // wie im echten Modell: nur im Wählmodus, Innenteile nur sichtbar ab Situs, keine Richtig/Falsch-Anzeige im Modell
+    if (!z.waehlen) return false;
+    if (key && (!TEILE[key] || !sichtbar(key))) key = null;
+    z.markiert = key; zeichnen();
+    setTimeout(() => { z.markiert = null; zeichnen(); }, 500);
+    window.parent !== window && window.parent.postMessage({ mw: "tipp", teil: key, teile: key ? [key, ...TEILE[key][1]] : [] }, "*");
+    return true;
+  }
+  $("fl").addEventListener("click", e => { const b = e.target.closest(".teil"); if (b) tippen(b.dataset.key); });
+  document.body.addEventListener("click", e => { if (!e.target.closest("button, input")) tippen(null); });   // Klick ins Leere
+
+  function befehl(m) {
+    switch (m.mw) {
+      case "info": info(); melde(); break;
+      case "status": melde(); break;
+      case "ansicht": ansicht(m.name, m.wert); break;
+      case "blick": if (BLICKE.includes(m.name)) { z.blick = m.name; zeichnen(); } break;
+      case "hervorheben": z.hervor = Array.isArray(m.teile) ? m.teile.slice() : []; zeichnen(); break;
+      case "beschriften": z.beschriften = !!m.an; zeichnen(); break;
+      case "nummern": z.nummern = Array.isArray(m.teile) ? m.teile.slice() : []; zeichnen(); break;
+      case "waehlen": z.waehlen = !!m.an; zeichnen(); break;
+      case "zurueck": z.wert = 0; z.hervor = []; z.nummern = []; z.beschriften = false; z.blick = "schraeg"; zeichnen(); break;
+      default: break;   // spielen, anhalten, freischalten, springe: ohne Wirkung (Kompatibilität)
+    }
+  }
+  window.addEventListener("message", e => { const m = e.data; if (m && typeof m.mw === "string") befehl(m); });
+  window.__attrappe = { tippen, ansicht, zustand: () => JSON.parse(JSON.stringify(z)), status };
+
+  zeichnen(); setInterval(melde, 500); info();
+})();
+</script>
+</body>
+</html>

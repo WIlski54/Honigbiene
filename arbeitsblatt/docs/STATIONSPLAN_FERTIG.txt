@@ -1,0 +1,1 @@
+Stationsplan je Reiter ist fertig und grün (3.10.2026): plan_nutztier.py, plan_koerper.py, plan_volk.py, plan_nutzen.py, plan_abschluss.py (STATIONEN, TYPEN); config.ABSCHNITTE/AUFGABEN_PLAN werden daraus gebaut; die Lesestrecke darf irgendwo in STATIONEN stehen (tab.leseNach = Aufgabennummer davor); Prüfung: tests/test_plaene.py (pytest 324 grün).
