@@ -85,7 +85,7 @@ BIE.modell3d = (() => {
       <div class="btn-row">
         <button class="btn btn-primary" type="button" data-action="erk-oeffnen" data-nr="${t.nr}">🧊 ${esc(t.knopf || cfg.knopf || "3D-Modell erkunden")}</button>
       </div>
-      <p class="hint">💡 Die Station ist erledigt, wenn du das Modell von außen, von innen und als Explosion angesehen hast. Drehen und Schieben geht mit dem Finger.</p>
+      <p class="hint">💡 Die Station ist erledigt, wenn du das Modell von außen, von innen und als Explosion angesehen hast. Öffnen geht mit der Wischbahn unter dem Modell, drehen mit dem Finger im Modell.</p>
       ${PRUEF ? `<p class="hint pruef-loesung">🔍 Prüfmodus: Die Station gilt bei ≥ ${SCHWELLE} % als erledigt – je ein Drittel für Außenansicht, Situs und Explosion. Die drei Knöpfe oben stellen die Ansichten ein.</p>` : ""}`;
   }
 

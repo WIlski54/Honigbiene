@@ -15,6 +15,15 @@ body.mit-film .film-layout { display: grid; grid-template-columns: minmax(0, 1.3
 /* Eingeklappt behält der Film seine Größe (nur beschnitten): bei 0 px Höhe meldet sein Zeichenfeld Fehler (drawImage mit Breite/Höhe 0) */
 .filmbuehne.klein .film-rahmen iframe { inset: auto; top: 0; left: 0; width: 320px; height: 180px; }
 
+/* 3D-Modell neben den Aufgaben (ab 1101 px, z. B. iPad quer): Rahmen 4 : 3 statt 16 : 9. In der rechten Spalte (≈ 480 px)
+   wird er so ≈ 360 statt 270 px hoch – über 300 px zeigt das Modell in seiner Leiste wieder Regler und „Abspielen“.
+   Die Höhe bleibt so begrenzt, dass Kopfzeile und Wischbahn (≈ 150 px) mit auf den Bildschirm passen. Filme bleiben 16 : 9. */
+@media (min-width: 1101px) {
+  .filmbuehne.ist-modell .film-rahmen { aspect-ratio: 4 / 3; max-height: calc(100vh - 190px); }
+  /* Etwas breitere Modellspalte (bei 1180 px ≈ 500 statt 478 px): ab 480 px steht die Leiste des Modells einzeilig (58 statt 102 px) */
+  body.mit-film .film-layout:has(.filmbuehne.ist-modell) { grid-template-columns: minmax(0, 1.2fr) minmax(340px, 1fr); }
+}
+
 /* iPad hochkant / Handy: Bühne über den Aufgaben, klebt oben, höchstens 40 % der Bildschirmhöhe inklusive Kopfzeile
    (Rahmen 34 vh + Kopfzeile ≈ 52 px; bei 768 × 1024 sind das 349 + 52 = 401 px = 39 %). In Stationen ohne Film-/Modell-
    Bindung steht sie eingeklappt (film.js, stationWechsel). */
@@ -23,6 +32,8 @@ body.mit-film .film-layout { display: grid; grid-template-columns: minmax(0, 1.3
   .filmbuehne { order: -1; top: 0; background: var(--hintergrund, #f4f7fb); padding-bottom: 4px; }
   .film-kopf { padding: 2px 4px 4px; }
   .film-rahmen { width: min(100%, calc(34vh * 16 / 9)); margin: 0 auto; }
+  /* Mit Wischbahn (≈ 56 px) wird das Modell etwas flacher, damit die Bühne bei 40 % der Bildschirmhöhe bleibt */
+  .filmbuehne.ist-modell .film-rahmen { width: min(100%, calc(30vh * 16 / 9)); }
 }
 
 /* Modell-Knöpfe an Aufgaben */

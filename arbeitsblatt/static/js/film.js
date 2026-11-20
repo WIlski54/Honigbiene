@@ -26,6 +26,11 @@
          Befehle, bis sich der Film zum ersten Mal gemeldet hat (info/status) – spätestens nach WARTE_AUF_FILM ms (Rückfall, falls er nie antwortet) –
          und sendet sie dann in der alten Reihenfolge. Danach geht alles direkt.
 
+   ERGÄNZUNG (20. November 2026, Wischbahn fürs iPad) – bei einem Update des Bausteins erneut anbringen:
+     (j) zeige() setzt an der Bühne die Klasse `ist-modell`, solange ein Film der Art "modell3d" läuft (film.css: höherer Rahmen,
+         app.css/wischbahn.js: Wischbahn unter dem Modell). Die API bietet zusätzlich `senden(id, befehl)` – ohne Puffer, ohne
+         Scrollen, für fortlaufende Befehle wie das Öffnen per Wischbahn (dort sind viele Nachrichten pro Sekunde normal).
+
    Was der Baustein macht
      • Filmbühne: eine iframe-Bühne neben den Aufgaben (breit) bzw. darüber, klebend (iPad/Handy). Sie erscheint in jedem Reiter,
        der einen Film nutzt (tab.film, Aufgabe typ "film"/"filmmoment" oder ein Modell-Knopf). Ein iframe je Film, das nie
@@ -148,6 +153,7 @@ BIE.film = (() => {
     iframeFuer(id);
     Object.entries(iframes).forEach(([k, fr]) => { fr.hidden = k !== id; });
     aktiv = id;
+    buehne.classList.toggle("ist-modell", artVon(id) === "modell3d");
     buehne.hidden = false;
     document.body.classList.add("mit-film");
     $("#film-titel").textContent = symbol(id) + " " + (FILME[id].titel || "Film");
@@ -432,7 +438,8 @@ BIE.film = (() => {
   function init() { buehneAufbauen(); zeige(filmFuerTab(state.activeTab)); }
 
   return {
-    init, render, nachRender, collect, restore, tabGesperrt, befehle, befehleFuer, knopf, zeige, stationWechsel, stationHoerer, bereit: id => !!bereit[id],
+    init, render, nachRender, collect, restore, tabGesperrt, befehle, befehleFuer, knopf, zeige, stationWechsel, stationHoerer, senden, aktiv: () => aktiv,
+    bereit: id => !!bereit[id],
     frei: id => fz(id).frei, gesehen: id => fz(id).gesehen, besucht: id => fz(id).besucht.slice(), status: id => lauf[id], info: id => info[id],
     beobachten: fn => hoerer.push(fn),
   };

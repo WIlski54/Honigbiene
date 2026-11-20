@@ -1,5 +1,22 @@
 # Honigbiene – gesicherter Fortsetzungsstand
 
+## Wischbahn und größere Modellbühne im AB (20. November 2026)
+
+Wunsch: Die Kinder öffnen die Biene auf dem iPad selbst per Wischgeste (statt eines Films zur Anatomie).
+- **Wischbahn** (`arbeitsblatt/static/js/wischbahn.js`, Stil in `app.css`): breite Bahn unter dem Modell, ein Finger nach rechts
+  öffnet stufenlos (Außen → Situs → Explosion), nach links schließt; Tipp springt; Tastatur Pfeile/Bild/Pos1/Ende. Sendet
+  `{mw:'ansicht', wert}` höchstens einmal pro Bild; der Griff folgt der Statusmeldung, wenn das Modell anders bewegt wird.
+  Sichtbar nur bei Modell-Bühne (`ist-modell`) und nicht eingeklappt. Nichts wird gespeichert (das Modell zählt `gesehen` selbst).
+- **film.js Ergänzung (j):** Klasse `ist-modell` an der Bühne, API `senden` und `aktiv`.
+- **Bühne ab 1101 px:** Modellrahmen 4 : 3 statt 16 : 9 und etwas breitere Spalte (`:has`). Bei 1180 × 820: 500 × 375 px statt
+  478 × 268 px; die Leiste des Modells steht einzeilig mit Regler (vorher ohne Regler). Unter 1100 px: Rahmen 30 vh hoch.
+- Texte der Erkunden-Station (8) A/B/C und der Hinweis nennen die Wischbahn. `ASSET_VERSION` 20261120a.
+- **Geprüft** (Playwright/SwiftShader, Prüfmodus): 1180 × 820, 820 × 1180, 375 × 667 – Wischen auf 55 % ergibt Situs, auf 100 %
+  Explosion (Modell meldet 0,55 bzw. 1), Griff folgt `ansicht gestalt` von außen, Tastatur, kein waagerechter Überlauf, keine
+  Konsolenfehler. 492 pytest + 52 JS-Tests grün (neu: `tests/test_wischbahn.py`).
+- **Offen:** kein echter iPad-Test der Wischbahn (Touch nur per Zeiger-Ereignissen geprüft). Bühnenhöhe hochkant 41 %, auf dem
+  Handy 49 % (Regel 40 %).
+
 ## GitHub-Veröffentlichung (4. Oktober 2026)
 
 Ziel: `https://github.com/WIlski54/Honigbiene.git`. Auf Wunsch des Nutzers wird **nur die 3D-Biene**
