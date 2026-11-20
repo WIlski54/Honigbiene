@@ -72,15 +72,15 @@
         nr: 8, typ: "erkunden", film: MODELL, eyebrow: "Forschen · 3D-Modell", titel: "Das 3D-Modell erkunden",
         niveaus: {
           A: {
-            auftrag: "Du bist Forscherin oder Forscher. Sieh dir die Biene der Reihe nach an: von außen, von innen (Situs) und als Explosion. Dreh sie dabei mit dem Finger. „Situs“ heißt: Die Organe liegen an ihrem Platz. Sieh nach, ob deine Vermutung stimmt. Die Fragen findest du in der nächsten Station wieder.",
+            auftrag: "Du bist Forscherin oder Forscher. Sieh dir die Biene der Reihe nach an: von außen, von innen (Situs) und als Explosion. Wische dazu auf der Bahn unter dem Modell nach rechts. Dann öffnet sich die Biene. Dreh sie mit dem Finger im Modell. „Situs“ heißt: Die Organe liegen an ihrem Platz. Sieh nach, ob deine Vermutung stimmt. Die Fragen findest du in der nächsten Station wieder.",
             beobachtung: ["Wie viele Beine siehst du?", "Wo sitzen die Flügel?", "Was liegt im Hinterleib?"],
           },
           B: {
-            auftrag: "Erkunde das Modell wie ein Forscher: von außen, von innen (Situs) und als Explosion. „Situs“ heißt: Die Organe liegen an ihrem Platz. Dreh die Biene und sieh sie von allen Seiten an. Sieh nach, ob deine Vermutung stimmt. Die Fragen findest du in der nächsten Station wieder.",
+            auftrag: "Erkunde das Modell wie ein Forscher: von außen, von innen (Situs) und als Explosion. Öffne die Biene mit der Wischbahn unter dem Modell. „Situs“ heißt: Die Organe liegen an ihrem Platz. Dreh die Biene und sieh sie von allen Seiten an. Sieh nach, ob deine Vermutung stimmt. Die Fragen findest du in der nächsten Station wieder.",
             beobachtung: ["Wie viele Beine siehst du? Woran sitzen sie?", "Wo sitzen die Flügel?", "Welche Organe liegen im Hinterleib?"],
           },
           C: {
-            auftrag: "Erkunde das Modell wie ein Forscher: von außen, von innen (Situs) und als Explosion. Achte darauf, was sich beim Öffnen verändert und was man von außen nicht sieht. Sieh nach, ob deine Vermutung stimmt. Die Fragen findest du in der nächsten Station wieder.",
+            auftrag: "Erkunde das Modell wie ein Forscher: von außen, von innen (Situs) und als Explosion. Öffne und schließe die Biene mit der Wischbahn. Achte darauf, was sich beim Öffnen verändert und was man von außen nicht sieht. Sieh nach, ob deine Vermutung stimmt. Die Fragen findest du in der nächsten Station wieder.",
             beobachtung: [
               "Wie viele Beine hat die Biene und woran sitzen sie?",
               "Welche Organe siehst du im Hinterleib, in der Brust und im Kopf?",
